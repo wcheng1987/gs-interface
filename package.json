@@ -1,0 +1,12 @@
+{
+    "name": "application-name"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "express": "2.5.1"
+    , "jade": ">= 0.0.1"
+    , "mysql": ">= 0.9.3"
+    ,"connect":">= 0.0.1"
+  }
+}
+

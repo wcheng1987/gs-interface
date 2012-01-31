@@ -1,0 +1,61 @@
+{  
+  "submit":{
+     "useTime":100,
+     "begintime":"2011-11-10 9:00:00",
+     "endtime":"2011-11-10 13:00:00",
+     "objectScore":34,
+     "item":[
+        {
+         "exa_id":1,
+         "answer":1         
+        },
+        {
+         "exa_id":10,
+         "answer":"1,2,3"
+         },
+        {
+         "exa_id":16,
+         "answer":1
+         },
+         {
+         "exa_id":21,
+         "option":{
+                 "1":"骑单车",
+                 "2":"抬头"
+          }},
+          {
+            "exa_id":26,
+            "textanswer":"啊啊啊啊啊啊啊啊啊啊啊"
+         },
+         {
+           "exa_id":30,
+           "answer":[
+                     {
+                       "exa_id":1,
+                       "answer":1         
+                      },
+                      {
+                       "exa_id":10,
+                       "answer":"1,2,3"
+                       },
+                       {
+                        "exa_id":16,
+                        "answer":1
+                        },
+                        {
+                         "exa_id":21,
+                         "option":{
+                                  "1":"骑单车",
+                                  "2":"抬头"
+                                    }
+                           },
+                                    {
+                                     "exa_id":26,
+                                     "textanswer":"啊啊啊啊啊啊啊啊啊啊啊"
+                                     }
+                ]  
+}                                                                      
+         ]
+     }
+}
+
