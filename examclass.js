@@ -14,7 +14,7 @@ exports.select=function(request,cb){
                     for(var i=0,len=rsp.length;i<len;i++){
                             selectExamClass(rsp[i]._id,i,function(re,j){
                                   obj.industry[j].examClass=re;
-                                  delete obj.industry[j]._id;
+//                                  delete obj.industry[j]._id;
                                   if(++done >= len){                                   
                                        result.status=200;
                                        result.reson='OK';

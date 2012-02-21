@@ -15,7 +15,7 @@ exports.select=function(request,cb){
                 fields:{
                         state:1,
                         del:0,
-                        examclass_id:parseInt(o.id)
+                        examclass_id:parseInt(o.examclass_id)
 			,"appointTime!":"NULL"
                 }
          }
@@ -23,11 +23,11 @@ exports.select=function(request,cb){
          db.select1(options,function(rsp){
                     obj.examPaper=rsp;
                     for(var i=0,len=rsp.length;i<len;i++){
-                            selectMem(rsp[i].mem_id,i,function(re,j){
+                            selectMem(rsp[i].creator_id,i,function(re,j){
                                   obj.examPaper[j].mem=re[0].realname;
                                   delete obj.examPaper[j].creator_id;
-                                  selectLoc(rsp[j].loc_id,j,function(res,k){
-                                        obj.examPaper[k].loc=res[0].name;
+                                  selectLoc(rsp[j].locale_id,j,function(res,k){
+                                        obj.examPaper[k].local=res[0].name;
                                         delete obj.examPaper[k].locale_id;
                                         if(++done >= len){
                                                result.status=200;

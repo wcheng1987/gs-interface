@@ -44,7 +44,7 @@ app.put("/api/member",function (request, response) {
                             modifyMember.modify(request,body,function(result){
                                 //response.writeHead(result.status,result.reson,result.headers);
                                 if(result.body)
-                                     response.send(result.body,{ 'Content-Type': 'text/plain' },result.status);
+                                     response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
                                 else
                                      response.send(result.status);
                             });
@@ -61,7 +61,7 @@ app.post("/api/member",function (request, response) {
                             registration.add(request,body,function(result){
                                 //response.writeHead(result.status,result.reson,result.headers);
                                 if(result.body)
-                                     response.send(result.body,{ 'Content-Type': 'text/plain' },result.status);
+                                     response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
                                 else
                                      response.send(result.status);
                             });
@@ -90,34 +90,34 @@ app.post("/api/login",function (request, response) {
                       });
 });
 
-app.get("/api/exampaper/:id",function (request, response) {
+app.get("/api/exampapers/:id",function (request, response) {
                       examitem.packData(request,function(result){
                       //examitem.select(request,function(result){
                            // response.send(result.reson,result.status);
                             if(result.body)
-                                 response.send(result.body,{ 'Content-Type': 'text/plain' },result.status);
+                                 response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
                             else
                                  response.send(result.status);
                       });
 });
 
 
-app.get("/api/exampaper",function (request, response) {
+app.get("/api/exampapers/",function (request, response) {
                       exampaper.select(request,function(result){
                             //response.writeHead(result.status,result.reson,result.headers);
                             if(result.body)
-                                 response.send(result.body,{ 'Content-Type': 'text/plain' },result.status);
+                                 response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
                             else
                                  response.send(result.status);
                       });
 });
 
 
-app.get("/api/industry/",function (request, response) {
+app.get("/api/industries/",function (request, response) {
                       examclass.select(request,function(result){
                             //response.writeHead(result.status,result.reson,result.headers);
                             if(result.body)
-                                 response.send(result.body,{ 'Content-Type': 'text/plain' },result.status);
+                                 response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
                             else
                                  response.send(result.status);
                       });
@@ -128,7 +128,7 @@ app.get("/api/newss/",function (request, response) {
                       news.select(request,function(result){
                             //response.writeHead(result.status,result.reson,result.headers);
                             if(result.body)
-                                 response.send(result.body,{ 'Content-Type': 'text/plain' },result.status);
+                                 response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
                             else
                                  response.send(result.status);
                       });
@@ -139,7 +139,7 @@ app.get("/api/newss/:id",function (request, response) {
                       news.selectNews(request,function(result){
                             //response.writeHead(result.status,result.reson, result.headers);
                             if(result.body)
-                                 response.send(result.body,{ 'Content-Type': 'text/plain' },result.status);
+                                 response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
                             else
                                  response.send(result.status);
                       });
@@ -155,7 +155,7 @@ app.get("/api/member",function (request, response) {
                                 query.query(request,function(result){
                                       //response.writeHead(result.status,result.reson,result.headers);
                                       if(result.body)
-                                           response.send(result.body,{ 'Content-Type': 'text/plain' },result.status);
+                                           response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
                                       else
                                            response.send(result.status);
                                 });
@@ -171,7 +171,7 @@ app.post("/api/answers/:id",function (request, response) {
                                  console.log(result.status);
                             //response.writeHead(result.status,result.reson, result.headers);
                                  if(result.body)
-                                      response.send(result.body,{ 'Content-Type': 'text/plain' },result.status);
+                                      response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
                                  else
                                       response.send(result.status);
                             });

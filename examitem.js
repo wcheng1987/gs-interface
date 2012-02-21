@@ -98,7 +98,7 @@ var queryItems = function(param, cb) {
 			if(null != set.itemtype_id) {
 				item = someThing(item, param.rs, set.itemtype_id);
 				item.examItem.push(set);
-				delete item._id;
+		//		delete item._id;
 				delete set.itemtype_id;
 			}
 			else if(null != set.parent_id) {//for multistem question
