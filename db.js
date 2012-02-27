@@ -10,9 +10,27 @@ process.env.TZ='Asia/Shanghai';
 client.utc=true;
 client.query('use '+ DB_NAME);
 
+
+exports.errorHandle = function(err, rs, cb) {
+	var ret = true;
+	if(err) {
+		cb({status:500});
+		ret = false;
+	}
+	else if(rs.length == 0 && !rs.allowNull) {
+		console.log("can not find record");
+		cb({status:404});
+		ret = false;
+	}	
+	return ret;
+}
+
 exports.query = function(sql, cb) { 
 	console.log(sql);
-	client.query(sql, cb);
+	client.query(sql, function(err, rs, fields) {
+        if(err) console.log(err.stack);
+        cb(err, rs, fields);
+    });
 }
 
 exports.select2 = function(o, cb) {

@@ -7,12 +7,12 @@
    "objectScore":34,
    "itemRecord":[
       {
-         "item_id":1,
+         "item_id":4,
          "score":2,
          "answer":1
       },
       {
-         "item_id":10,
+         "item_id":236,
          "score":4,
          "answers":[
             1,
@@ -21,34 +21,36 @@
          ]
       },
       {
-         "item_id":16,
+         "item_id":6,
          "score":2,
          "answer":1
       },
       {
-         "item_id":21,
+         "item_id":7,
          "score":4,
          "answers":[
             "填空题答案1",
-            "填空题答案2"
+            "",
+            "填空题答案3",
+            ""
          ]
       },
       {
-         "item_id":26,
+         "item_id":8,
          "score":8,
          "textanswer":"问答题答案回答内容"
       },
       {
-         "item_id":30,
+         "item_id":9,
          "score":20,
-         "item":[
+         "itemRecord":[
             {
-               "item_id":1,
+               "item_id":10,
                "score":2,
                "answer":1
             },
             {
-               "item_id":10,
+               "item_id":11,
                "score":4,
                "answers":[
                   1,
@@ -57,20 +59,22 @@
                ]
             },
             {
-               "item_id":16,
+               "item_id":12,
                "score":2,
                "answer":1
             },
             {
-               "item_id":21,
+               "item_id":13,
                "score":4,
                "answers":[
                   "填空题答案1",
-                  "填空题答案2"
+                  "",
+                  "填空题答案3",
+                  ""
                ]
             },
             {
-               "item_id":26,
+               "item_id":14,
                "score":8,
                "textanswer":"问答题答案回答内容"
             }

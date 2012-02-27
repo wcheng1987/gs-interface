@@ -1,15 +1,19 @@
 var fs = require('fs');
 var http = require('http');
 
+var host = '127.0.0.1'
+//var host = '192.168.0.115'
 var port = 1339;
+//var path = '/api/members/619';
 var path = '/api/exam_records/';
-if(process.argv[3]) port = process.argv[3];
+//var path = '/api/login';
+if(process.argv[3]) path = process.argv[3];
 if(process.argv[4]) port = process.argv[4];
 var options = {
-  host: '127.0.0.1',
+  host: host,
   port: port,
   path: path,
-  method: 'POST',
+  method: 'PUT',
   headers: {'Content-Type': 'application/json'}
 };
 
@@ -29,6 +33,4 @@ req.on('error', function(e) {
 var postFile = process.argv[2];
 if(undefined === process.argv[2]) postFile = './json/record.json';
 
-//var json = fs.readFileSync(postFile);
-//req.end(json);
 req.end(fs.readFileSync(postFile));

@@ -1,0 +1,14 @@
+{
+   "member":{
+      "username":"张三",
+      "email":" gbo@gste.com ",
+      "realname":"刘备",
+      "school":"学校",
+      "clazz":"3年2班",
+      "sexy":1,
+      "birth":"2012-02-23",
+      "inro":"个人简介",
+      "phone":18912345678
+   }
+}
+
