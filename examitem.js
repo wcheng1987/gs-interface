@@ -39,7 +39,7 @@ var queryMultistem = function(param, cb) {
 }
 
 var queryOptions = function(param, cb) {
-	var sql = "SELECT item_id, text, rightanswer FROM `gs_examoption` WHERE `item_id` in ("+param.optArr+") order by item_id, number";
+	var sql = "SELECT _id, item_id, text, rightanswer, number FROM `gs_examoption` WHERE `item_id` in ("+param.optArr+") order by item_id, number";
 
 	db.query(sql, function(err, result, fields) {
 		if(!errorHandle(err, result, cb)) return;

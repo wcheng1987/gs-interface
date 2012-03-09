@@ -20,7 +20,7 @@ exports.add = function(req, res) {
     
     db.query(sql, function(err, rs) {
         if(db.errorHandle(err, rs, function(result) {
-            if(result.status != 404) res.send(result.status);
+            if(result.status != 204) res.send(result.status);
             reg.regtime = getNow();
             reg.state = 1;
             reg.type = 1;
@@ -44,44 +44,31 @@ exports.add = function(req, res) {
 
 exports.query = function(req, res) {
     console.log("query member id="+req.params.id);
-    if(req.session.member && req.params.id == req.session.member._id) 
-    {
-        var json = {member:req.session.member};
-        res.json(json);
-    }
-    else
-    {
-        res.send(401);
-    }
+    var json = {member:req.session.member};
+    res.json(json);
 }
 
 exports.update = function(req, res) {
     console.log("update member id="+req.params.id);
     //for test
-    req.session.member = req.session.member || {_id:619};
-    if(req.params.id == req.session.member._id) 
-    {
-        //check database first for valid info
-        //....
+//    req.session.member = req.session.member || {_id:619};
+
+    //check database first for valid info
+    //....
         
-        var opt = {
-            table:"gs_member"
-            ,fields:req.body.member
-            ,where:"_id="+req.params.id
+    var opt = {
+        table:"gs_member"
+        ,fields:req.body.member
+        ,where:"_id="+req.params.id
+    }
+    db.update(opt, function(err) {
+        if(err) res.send(422);
+        for(var k in req.body.member)
+        {
+            req.session.member[k] = req.body.member[k];
         }
-        db.update(opt, function(err) {
-            if(err) res.send(422);
-            for(var k in req.body.member)
-            {
-                req.session.member[k] = req.body.member[k];
-            }
-            res.send(200);
-        });
-    }
-    else
-    {
-        res.send(401);
-    }
+        res.send(200);
+    });
 }
 
 exports.login=function(req, res){
@@ -96,7 +83,7 @@ exports.login=function(req, res){
           
     db.query(sql,function(err, rs){
         if(!db.errorHandle(err, rs, function(result) {
-            if(result) res.send(result.status);
+            res.send(result.status);
         })) return;
         console.log("login==", rs);
         if(1 != rs[0].state) res.send(403);

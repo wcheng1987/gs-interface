@@ -16,51 +16,29 @@ ArrayCB.prototype.cbDone = function(status) {
     }
 };
 
-var errorHandle = function(err, rs, cb) {
-	var ret = true;
-	if(err) {
-		console.log(err.stack);
-		cb({status:500});
-		ret = false;
-	}
-	else if(rs.length == 0 && !rs.allowNull) {
-		console.log("can not find record");
-		cb({status:404});
-		ret = false;
-	}	
-	return ret;
-}
-
 //add option records of item records
 var addItemOptionRecord = function(gid, ir, cb)
 {
     console.log("addItemOptionRecord");
-    var sql = "SELECT *  FROM `gs_examoption` WHERE `item_id` = "+ir.item_id
-    db.query(sql, function(err, rs) {
-        if(!errorHandle(err, rs, cb)) return;
-        console.log(rs);
-        var opt = {table:'gs_examoptionanswer'};
-        var done = 0;
-        for(var k = 0, len = ir.answers.length; k < len; k++) {
-            var answer = ir.answers[k];
-            opt.fields = {
-                item_id: gid
-                ,rightanswer: rs[k].rightanswer
-                ,answer:answer
-            }
-            if(typeof answer == 'string') {
-                opt.fields.option_id = rs[k]._id;
-            }
-            else if(typeof answer == 'number') {
-                opt.fields.option_id = rs[answer-1]._id;
-            }
-            db.insert(opt, function() {
-                if(++done == len) cb({status:201});
-            });
-            
-        }
+    var answers = ir.answers;
+    var acb = new ArrayCB(answers.length, 201, function(status) {
+        var result = {status:status};
+        cb(result);
     });
-
+    answers.forEach(function(ior) {
+        var opt = {
+            table:'gs_examoptionanswer'
+            ,fields:{
+                item_id: gid
+                ,option_id: ior.option_id
+                ,answer:ior.answer
+            }
+        }
+        var kThis = this;//The "this" is acb. 
+        db.insert(opt, function() {
+            kThis.cbDone(201);
+        });
+    }, acb);
 }
 
 //add item records of this exam into itemAnswer 
@@ -69,14 +47,14 @@ var addItemRecord = function(gid, itemRecords, cb) {
 	var opt = { table:'gs_examitemanswer'},
     done = 0;
 	for(var k = 0, len = itemRecords.length; k < len; k++) {
-		console.log("k=",k);
+//		console.log("k=",k);
 		(function () {
 			var ir = itemRecords[k];
 			ir.parent_id = gid;
 			//console.log(ir);
 			opt.fields = ir; 
 			db.insert(opt, function() {
-                if(ir.answers) //multi-choose and blank
+                if(ir.answers && ir.answers.length > 0) //multi-choose and blank
                 {
                     addItemOptionRecord(gid, ir, function(result) {
                         if(result.status >= 300 || ++done == len) cb(result);
@@ -120,8 +98,9 @@ var addRecord = function(record, member, cb)
 
 exports.add = function(req, res) {
     console.log("==add examination record==");
+//    req.session.member = {_id:42};
     addRecord(req.body, req.session.member, function(result) {
-        if(201 == result) res.json(result.json, result.status);
+        if(201 == result.status) res.json(result.json, result.status);
         else res.send(result.status);
     });
 }
@@ -204,7 +183,9 @@ var makeupRecord = function(record)
                 "WHERE t2._id = t1.item_id AND t1.`parent_id` = "+record._id;
     var kThis = this;
     db.query(sql, function(err, rs) {
-        if(!err) 
+        if(db.errorHandle(err, rs, function(result) {
+            kThis.cbDone(result.status);
+        })) 
         {
             var acb = new ArrayCB(rs.length, 200, function(status) {
                 if(200 == status) {
@@ -216,10 +197,6 @@ var makeupRecord = function(record)
             });
             rs.forEach(makeupItemRecord, acb);
         }
-        else
-        {
-            kThis.cbDone(500);
-        }
     });
 }
 
@@ -229,7 +206,6 @@ var queryRecords = function(sql, cb)
     console.log("==queryRecords==");
     db.query(sql, function(err, rs) {
         if(db.errorHandle(err, rs, function(result) {
-            if(result.status == 404) result.status = 204;
             cb(result);
         }))
         {
@@ -244,6 +220,7 @@ var queryRecords = function(sql, cb)
 }
 
 var addRecords = function(records, member, cb) {
+    console.log("==addRecords==");
     if(records && records.length > 0)
     {
         var acb = new ArrayCB(records.length, 201, function(status) {
@@ -272,11 +249,11 @@ var addRecords = function(records, member, cb) {
 exports.sync = function(req, res) {
     console.log("==sync examination record==");
     //just for test
-    //req.session.member = {_id:42};
+  //  req.session.member = {_id:619};
 
     var json = {};
-    var commited = req.body.commited;
-    var records = req.body.uncommit;
+    var commited = req.body.commited || [];
+    var records = req.body.uncommit || [];
 
     //query exist record which on server only and response them
     var sql = "SELECT * FROM `gs_examinfo` WHERE examinee_id = "+
@@ -302,7 +279,8 @@ exports.sync = function(req, res) {
             if( statusQuery >=300 && result.status >= 300) 
                 res.send(result.status);
             else if(statusQuery < 300 && result.status < 300) res.json(json); 
-            else res.json(json, 206);
+            else if(json.commitReceipt || json.examRecord) res.json(json, 206);
+            else res.send(204);
         });
     });
 }

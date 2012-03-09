@@ -1,71 +1,16 @@
-var url = require('url');
-var qs = require('querystring');
 var db = require('./db.js');
 
-exports.select=function(request,cb){
-         var uil=url.parse(request.url);
-         var o=qs.parse(uil.query);
-         var result = {status:500, headers: {'Content-Type': 'text/plain; charset=utf-8'},
-                                   reson:"Internal Server Error",body:""};
-         var obj={};
-         console.log(o);
-         var options = {
-                table: "gs_exampaper",
-                column:" _id,creator_id,locale_id,name,memo,hits,createDate,totalScore,timeLimit,appointTime,share,answerHidden,examercount ",
-                fields:{
-                        state:1,
-                        del:0,
-                        examclass_id:parseInt(o.examclass_id)
-			,"appointTime!":"NULL"
-                }
-         }
-         done=0;
-         db.select1(options,function(rsp){
-                    obj.examPaper=rsp;
-                    for(var i=0,len=rsp.length;i<len;i++){
-                            selectMem(rsp[i].creator_id,i,function(re,j){
-                                  obj.examPaper[j].mem=re[0].realname;
-                                  delete obj.examPaper[j].creator_id;
-                                  selectLoc(rsp[j].locale_id,j,function(res,k){
-                                        obj.examPaper[k].local=res[0].name;
-                                        delete obj.examPaper[k].locale_id;
-                                        if(++done >= len){
-                                               result.status=200;
-                                               result.reson='OK';
-                                               result.body=JSON.stringify(obj);
-                                               cb(result);
-                                        }
-                                  });
-                            });
-                    }
-         });
-}
-
-var selectMem=function(id,i,cb){
-         var options = {
-                table: "gs_member",
-                fields: {
-                         _id:id
-                },
-                column:"realname",
-                cbParam:i
-         }
-         db.select1(options, function(re,j) {
-                cb(re,j);
-         });
-}
-
-var selectLoc=function(id,i,cb){
-         var options = {
-                table: "gs_location",
-                fields: {
-                         _id:id
-                },
-                column:"name",
-                cbParam:i
-         }
-         db.select1(options, function(res,k) {
-                cb(res,k);
-         });
+exports.query = function(req, res) {
+    console.log("==query exampapers==");
+    var sql = "SELECT t1.`_id`, t1.`name`, t1.`memo`, t1.`hits`, t1.`createDate`, t1.`totalScore`, t1.`timeLimit`, t1.`examercount`, t1.`share`, t1.`answerHidden`, t2.realname AS creator, t3.name AS local FROM `gs_exampaper` AS t1, `gs_member` AS t2,  `gs_location` AS t3 WHERE t1.creator_id = t2._id AND t1.locale_id = t3._id AND t1.state=1 AND t1.appointTime IS NOT NULL AND t1.examclass_id="+req.query.examclass_id;
+    
+    db.query(sql, function(err, rs) {
+        if(db.errorHandle(err, rs, function(result) {
+            res.send(result.status);
+        }))
+        {
+            res.json({examPaper:rs});
+        }
+    });
 }
 

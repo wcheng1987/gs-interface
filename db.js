@@ -9,7 +9,10 @@ var client = mysql.createClient({
 process.env.TZ='Asia/Shanghai';
 client.utc=true;
 client.query('use '+ DB_NAME);
-
+client._socket.on('connect', function() {
+    console.log("use ",DB_NAME);
+    client.query('use '+DB_NAME);
+});
 
 exports.errorHandle = function(err, rs, cb) {
 	var ret = true;
@@ -19,7 +22,7 @@ exports.errorHandle = function(err, rs, cb) {
 	}
 	else if(rs.length == 0 && !rs.allowNull) {
 		console.log("can not find record");
-		cb({status:404});
+		cb({status:204});
 		ret = false;
 	}	
 	return ret;
@@ -71,6 +74,7 @@ exports.select2 = function(o, cb) {
                                  result[len+i]=re[i];
                                  if(++done >= lem){
                                         cb(result);
+//                                        client.end();
                                  }
                           
                           }

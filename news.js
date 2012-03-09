@@ -83,11 +83,11 @@ exports.select=function(request,cb){
             done=0;
             for(var i=0,len=rsp.length;i<len;i++){
                 console.log(rsp[i]._id);
-                newss.news[i].url=global+rsp[i]._id;
+//                newss.news[i].url=global+rsp[i]._id;
                 newss.news[i].imageurl=goble+newss.news[i].imageurl;//"http://192.168.0.25:8080/gs_ctrl_web/UploadFiles//image//1325911677031//7.jpg";//goble+newss.news[i].imageurl;
                 var reg=new RegExp("\\\\","g");
                 newss.news[i].imageurl=newss.news[i].imageurl.replace(reg,"\/");     
-                delete newss.news[i]._id;
+//                delete newss.news[i]._id;
                 selectModifyUser(rsp[i].modifyuser,i,function(set,j){
                                  newss.news[j].modifyuser=set[0].username;
 				 console.log("News Done:",done,len);

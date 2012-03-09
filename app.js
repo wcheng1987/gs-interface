@@ -27,19 +27,31 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-function andRestrictLogin(req, res, next) {
+function andRestrictAuth(req, res, next) {
     if(req.session.member) next();
     else res.send(401);
         //next(new Error('Unauthorized'));
 }
 
+function andRestrictToSelf(req, res, next) {
+    if(req.session.member &&
+       req.session.member._id == req.param.id) next();
+    else res.send(401);
+    //next(new Error('Unauthorized'));
+}
 goble="http://192.168.0.115:8082/gs_ctrl_web";
 global="http://192.168.0.115:1339/api/newss/";
 
 app.post("/api/members/", member.add);
 app.post("/api/login", member.login);
-app.get("/api/members/:id", member.query);
-app.put("/api/members/:id", member.update);
+app.get("/api/members/:id", andRestrictToSelf, member.query);
+app.put("/api/members/:id", andRestrictToSelf, member.update);
+
+app.get("/api/exampapers/", exampaper.query);
+
+app.post("/api/exam_records/", andRestrictAuth, examRecord.add);
+app.put("/api/exam_records/", andRestrictAuth, examRecord.sync);
+//app.put("/api/exam_records/", examRecord.sync);
 
 app.get("/api/exampapers/:id",function (request, response) {
                       examitem.packData(request,function(result){
@@ -51,18 +63,6 @@ app.get("/api/exampapers/:id",function (request, response) {
                                  response.send(result.status);
                       });
 });
-
-
-app.get("/api/exampapers/",function (request, response) {
-                      exampaper.select(request,function(result){
-                            //response.writeHead(result.status,result.reson,result.headers);
-                            if(result.body)
-                                 response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
-                            else
-                                 response.send(result.status);
-                      });
-});
-
 
 app.get("/api/industries/",function (request, response) {
                       examclass.select(request,function(result){
@@ -96,9 +96,6 @@ app.get("/api/newss/:id",function (request, response) {
                       });
 });
 
-
-app.post("/api/exam_records/", examRecord.add);
-app.put("/api/exam_records/", andRestrictLogin, examRecord.sync);
 
 app.listen(1339);
 
