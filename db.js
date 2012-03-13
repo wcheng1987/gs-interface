@@ -4,16 +4,17 @@ var client = mysql.createClient({
         host:'192.168.0.115',
         user:'root',
         password:'123456',
+        database:DB_NAME,
         timezone:'Asia/Shanghai'
 });
 process.env.TZ='Asia/Shanghai';
 client.utc=true;
-client.query('use '+ DB_NAME);
+/*client.useDatabase(DB_NAME);
 client._socket.on('connect', function() {
     console.log("use ",DB_NAME);
-    client.query('use '+DB_NAME);
+    client.useDatabase(DB_NAME);
 });
-
+*/
 exports.errorHandle = function(err, rs, cb) {
 	var ret = true;
 	if(err) {

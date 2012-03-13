@@ -83,6 +83,7 @@ exports.login=function(req, res){
           
     db.query(sql,function(err, rs){
         if(!db.errorHandle(err, rs, function(result) {
+            if(result.status == 204) result.status = 404;
             res.send(result.status);
         })) return;
         console.log("login==", rs);

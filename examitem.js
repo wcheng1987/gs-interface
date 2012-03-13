@@ -18,6 +18,9 @@ var errorHandle = function(err, rs, cb) {
 }
 
 var packDone = function(param, cb) {
+        param.json.examItemType = param.json.examItemType.filter(function(it) {
+            return (it.examItem && it.examItem.length > 0);
+        });
 	result = { 
 		status:200
 		,body:param.json
@@ -116,6 +119,8 @@ var queryItems = function(param, cb) {
 				param.msItemArr.push(set);
 			} 
 		});
+        
+//        console.log(JSON.stringify(param.json.examItemType));
 		param.rs = result;
 		queryOptions(param, cb);
 	});
