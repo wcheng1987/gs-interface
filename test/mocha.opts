@@ -1,3 +1,5 @@
 --require should
 --slow 20
 --growl
+--reporter html-cov
+--reporter spec

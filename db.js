@@ -9,12 +9,7 @@ var client = mysql.createClient({
 });
 process.env.TZ='Asia/Shanghai';
 client.utc=true;
-/*client.useDatabase(DB_NAME);
-client._socket.on('connect', function() {
-    console.log("use ",DB_NAME);
-    client.useDatabase(DB_NAME);
-});
-*/
+
 exports.errorHandle = function(err, rs, cb) {
 	var ret = true;
 	if(err) {

@@ -4,7 +4,6 @@
  */
 
 var EventEmitter = require('events').EventEmitter
-//  , methods = require('../../node_modules/express/').methods
   , http = require('http');
 
 module.exports = request;
@@ -33,7 +32,6 @@ Request.prototype.__proto__ = EventEmitter.prototype;
 var methods = ['OPTIONS', 'GET', 'POST', 'PUT', 'DELETE', 'TRACE', 'CONNECT'].map(function(method) {
     return method.toLowerCase();
 });
-//console.log(methods);
 
 methods.forEach(function(method) {
     Request.prototype[method] = function(path) {
@@ -61,6 +59,8 @@ Request.prototype.expect = function(body, fn){
   this.end(function(res){
     if ('number' == typeof body) {
       res.statusCode.should.equal(body);
+    } else if (body instanceof Array) {
+      res.statusCode.should.within(body[0], body[1]);
     } else if (body instanceof RegExp) {
       res.body.should.match(body);
     } else {
