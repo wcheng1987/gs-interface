@@ -1,13 +1,9 @@
 var mysql = require('mysql');
-var DB_NAME = 'goldstone';
-var client = mysql.createClient({
-        host:'192.168.0.115',
-        user:'root',
-        password:'123456',
-        database:DB_NAME,
-        timezone:'Asia/Shanghai'
-});
-process.env.TZ='Asia/Shanghai';
+var env = require('env.json');
+var client = mysql.createClient(env.mysql);
+
+process.env.TZ = env.mysql.timezone;
+console.log(env);
 client.utc=true;
 
 exports.errorHandle = function(err, rs, cb) {
