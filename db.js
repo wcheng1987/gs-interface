@@ -3,7 +3,6 @@ var env = require('env.json');
 var client = mysql.createClient(env.mysql);
 
 process.env.TZ = env.mysql.timezone;
-console.log(env);
 client.utc=true;
 
 exports.errorHandle = function(err, rs, cb) {
