@@ -8,7 +8,6 @@ var examitem = require('./examitem.js');
 var examRecord = require('./examRecord.js');
 var member = require('./member.js');
 
-
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
