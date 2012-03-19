@@ -44,6 +44,8 @@ function andRestrictToSelf(req, res, next) {
 goble="http://192.168.0.115:8082/gs_ctrl_web";
 global="http://192.168.0.115:1339/api/newss/";
 
+var fs = require('fs');
+app.get("/api", function(req, res) { fs.readFile("non.log", function(err) { if(err) throw err;})});  
 app.post("/api/members/", member.add);
 app.post("/api/login", member.login);
 app.get("/api/members/:id", andRestrictToSelf, member.query);
