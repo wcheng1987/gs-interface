@@ -39,6 +39,8 @@ function andRestrictToSelf(req, res, next) {
     //next(new Error('Unauthorized'));
 }
 
+
+
 goble="http://192.168.0.115:8082/gs_ctrl_web";
 global="http://192.168.0.115:1339/api/newss/";
 
