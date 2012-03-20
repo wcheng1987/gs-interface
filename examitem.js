@@ -42,6 +42,11 @@ var queryMultistem = function(param, cb) {
 }
 
 var queryOptions = function(param, cb) {
+    if(0 == param.optArr.length) {
+        queryMultistem(param, cb);
+        return;
+    }
+    
 	var sql = "SELECT _id, item_id, text, rightanswer, number FROM `gs_examoption` WHERE `item_id` in ("+param.optArr+") order by item_id, number";
 
 	db.query(sql, function(err, result, fields) {
@@ -65,7 +70,7 @@ var queryOptions = function(param, cb) {
 			else if(item.type == 2) {
 				item.option.push(set);
 			}
-			console.log(set);
+//			console.log(set);
 		});
 		queryMultistem(param, cb);	
 	});
