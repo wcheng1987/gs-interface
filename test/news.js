@@ -1,12 +1,18 @@
 var request = require('./support/http');
+var url = require('url');
+//var qs = require('querystring');
 
 function getImage(news) {
     it('#should get NO.'+news._id+' image URL:'+news.imageurl, function(done) {
         var req = request().get('/');
-        req.path = news.imageurl;
+        var imageurl = url.parse(news.imageurl);
+        req.addr.port = imageurl.port
+        req.addr.address = imageurl.hostname
+        req.path = imageurl.pathname;
         req.end(function(res) {
+//            console.log(res.headers);
             res.should.have.status(200)
-            res.should.have.header('content-length').with.above(0)
+//            res.should.have.header('Content-Length').with.above(0)
             done()
         })
     })
@@ -19,7 +25,7 @@ function getNews(news) {
             .get('/newss/'+news._id)
             .expect(200,done)
         })
-//        if(news.imageurl) getImage(news);
+        if(news.imageurl) getImage(news);
     })
 }
 

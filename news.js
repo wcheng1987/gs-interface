@@ -1,5 +1,3 @@
-var url = require('url');
-var qs = require('querystring');
 var db = require('./db.js');
 var env = require('env.json');
 

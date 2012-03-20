@@ -19,7 +19,8 @@ function Request(showRes) {
   this.basePath = '/api';
   this.addr = {
       port:1339,
-      address:'127.0.0.1'
+//      address:'127.0.0.1'
+      address:'180.96.19.107'
   };
   this.showRes = showRes || false; 
 }
