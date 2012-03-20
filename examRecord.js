@@ -248,8 +248,6 @@ var addRecords = function(records, member, cb) {
 //sync the examination records
 exports.sync = function(req, res) {
     console.log("==sync examination record==");
-    //just for test
-  //  req.session.member = {_id:619};
 
     var json = {};
     var commited = req.body.commited || [];

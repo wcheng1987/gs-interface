@@ -8,11 +8,11 @@ var EventEmitter = require('events').EventEmitter
 
 module.exports = request;
 
-function request() {
-  return new Request();
+function request(showRes) {
+  return new Request(showRes);
 }
 
-function Request() {
+function Request(showRes) {
   var self = this;
   this.data = [];
   this.header = {};
@@ -21,6 +21,7 @@ function Request() {
       port:1339,
       address:'127.0.0.1'
   };
+  this.showRes = showRes || false; 
 }
 
 /**
@@ -91,6 +92,7 @@ Request.prototype.end = function(fn){
       res.on('data', function(chunk){ buf += chunk });
       res.on('end', function(){
         res.body = buf;
+        if (self.showRes) console.log("\nresponse body:",res.body);
         fn(res);
       });
     });

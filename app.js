@@ -1,4 +1,3 @@
-
 var express = require('express');
 var app = module.exports = express.createServer();
 
@@ -8,6 +7,7 @@ var exampaper = require('./exampaper.js');
 var examitem = require('./examitem.js');
 var examRecord = require('./examRecord.js');
 var member = require('./member.js');
+
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -40,12 +40,9 @@ function andRestrictToSelf(req, res, next) {
     //next(new Error('Unauthorized'));
 }
 
+app.get("/api/newss/", news.list);
+app.get("/api/newss/:id", news.query);
 
-goble="http://192.168.0.115:8082/gs_ctrl_web";
-global="http://192.168.0.115:1339/api/newss/";
-
-var fs = require('fs');
-app.get("/api", function(req, res) { fs.readFile("non.log", function(err) { if(err) throw err;})});  
 app.post("/api/members/", member.add);
 app.post("/api/login", member.login);
 app.get("/api/members/:id", andRestrictToSelf, member.query);
@@ -55,7 +52,6 @@ app.get("/api/exampapers/", exampaper.query);
 
 app.post("/api/exam_records/", andRestrictAuth, examRecord.add);
 app.put("/api/exam_records/", andRestrictAuth, examRecord.sync);
-//app.put("/api/exam_records/", examRecord.sync);
 
 app.get("/api/exampapers/:id",function (request, response) {
                       examitem.packData(request,function(result){
@@ -71,28 +67,6 @@ app.get("/api/exampapers/:id",function (request, response) {
 app.get("/api/industries/",function (request, response) {
                       examclass.select(request,function(result){
                             //response.writeHead(result.status,result.reson,result.headers);
-                            if(result.body)
-                                 response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
-                            else
-                                 response.send(result.status);
-                      });
-});
-
-
-app.get("/api/newss/",function (request, response) {
-                      news.select(request,function(result){
-                            //response.writeHead(result.status,result.reson,result.headers);
-                            if(result.body)
-                                 response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
-                            else
-                                 response.send(result.status);
-                      });
-});
-
-app.get("/api/newss/:id",function (request, response) {
-                      console.log("aaaaa");
-                      news.selectNews(request,function(result){
-                            //response.writeHead(result.status,result.reson, result.headers);
                             if(result.body)
                                  response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
                             else

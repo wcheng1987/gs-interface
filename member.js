@@ -1,6 +1,10 @@
 var db = require('./db.js');
 var crypto = require('crypto');
 
+var Md5=function(str) {
+    return crypto.createHash('md5').update(str).digest('hex');
+}
+
 var getNow=function(){
         var now = new Date();
         var year = now.getFullYear();

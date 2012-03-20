@@ -148,11 +148,3 @@ exports.packData = function(req, cb) {
 	param.sql = "SELECT t1._id, title, t2.basetype type FROM gs_examitemtype t1, gs_itemtypemark t2 WHERE t1.type = t2._id AND paper_id ="+req.params.id+" order by t1._id";
 	packItems(param, cb);
 }
-/*
-var req = {
-	params: {
-		id:1
-	}
-}
-exports.packData(req, null);
-*/
