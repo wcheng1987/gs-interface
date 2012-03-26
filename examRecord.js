@@ -98,7 +98,6 @@ var addRecord = function(record, member, cb)
 
 exports.add = function(req, res) {
     console.log("==add examination record==");
-//    req.session.member = {_id:42};
     addRecord(req.body, req.session.member, function(result) {
         if(201 == result.status) res.json(result.json, result.status);
         else res.send(result.status);

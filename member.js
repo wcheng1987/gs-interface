@@ -1,9 +1,4 @@
 var db = require('./db.js');
-var crypto = require('crypto');
-
-var Md5=function(str) {
-    return crypto.createHash('md5').update(str).digest('hex');
-}
 
 var getNow=function(){
         var now = new Date();
@@ -20,24 +15,28 @@ exports.add = function(req, res) {
     if(reg.email)
         sql += " OR email = '"+reg.email+"'";
     else if(reg.phone)
-        sql += " OR phone = "+reg.email;
+        sql += " OR phone = "+reg.phone;
     
     db.query(sql, function(err, rs) {
         if(db.errorHandle(err, rs, function(result) {
-            if(result.status != 204) res.send(result.status);
-            reg.regtime = getNow();
-            reg.state = 0;
-            reg.type = 0;
-            options={
-                table: "gs_member",
-                fields:reg
-            }                             
-            db.insert(options,function(gid){
-                reg._id = gid;
-                req.session.member = reg;
-                var json = {member:{_id:gid, username:reg.username}};
-                res.json(json, 201);
-            });
+            if(result.status != 204) {
+                res.send(result.status);
+            }
+            else {
+                reg.regtime = getNow();
+                reg.state = 0;
+                reg.type = 0;
+                options={
+                    table: "gs_member",
+                    fields:reg
+                }                             
+                db.insert(options,function(gid){
+                    reg._id = gid;
+                    req.session.member = reg;
+                    var json = {member:{_id:gid, username:reg.username}};
+                    res.json(json, 201);
+                });
+            }   
         }))
         {
             console.log(rs);
@@ -54,8 +53,6 @@ exports.query = function(req, res) {
 
 exports.update = function(req, res) {
     console.log("update member id="+req.params.id);
-    //for test
-//    req.session.member = req.session.member || {_id:619};
 
     //check database first for valid info
     //....
@@ -67,11 +64,10 @@ exports.update = function(req, res) {
     }
     db.update(opt, function(err) {
         if(err) res.send(422);
-        for(var k in req.body.member)
-        {
-            req.session.member[k] = req.body.member[k];
+        else {
+            req.session.member = req.body.member;
+            res.send(200);
         }
-        res.send(200);
     });
 }
 
@@ -94,14 +90,13 @@ exports.login=function(req, res){
         if(0 != rs[0].state) res.send(403);
         else{
             if(req.body.identification.password === rs[0].password){
-                var op={
+                req.session.member = rs[0];
+                var opt={
                     table: "gs_member",
                     fields:{lastlogintime:getNow()},
                     where:"_id="+rs[0]._id
                 }
-                db.update(op,function(){
-                    delete rs[0].password; 
-                    req.session.member = rs[0];
+                db.update(opt,function(){
                     var json = {
                         member:{
                             _id:rs[0]._id
