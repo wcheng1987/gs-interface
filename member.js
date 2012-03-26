@@ -26,8 +26,8 @@ exports.add = function(req, res) {
         if(db.errorHandle(err, rs, function(result) {
             if(result.status != 204) res.send(result.status);
             reg.regtime = getNow();
-            reg.state = 1;
-            reg.type = 1;
+            reg.state = 0;
+            reg.type = 0;
             options={
                 table: "gs_member",
                 fields:reg
@@ -91,7 +91,7 @@ exports.login=function(req, res){
             res.send(result.status);
         })) return;
         console.log("login==", rs);
-        if(1 != rs[0].state) res.send(403);
+        if(0 != rs[0].state) res.send(403);
         else{
             if(req.body.identification.password === rs[0].password){
                 var op={
