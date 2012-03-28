@@ -63,7 +63,12 @@ var queryOptions = function(param, cb) {
 				item.option = []; 
 			}
 			delete set.item_id;
-			if(item.type == 1 || 4 == item.type) {
+			if(item.type == 1) {
+                if(set.rightanswer) item.answer = set.number+1;
+				delete set.rightanswer;
+				item.option.push(set);
+            }
+            else if(4 == item.type) {
 				delete set.rightanswer;
 				item.option.push(set);
 			}
