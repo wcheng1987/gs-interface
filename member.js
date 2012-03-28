@@ -67,7 +67,9 @@ exports.update = function(req, res) {
     db.update(opt, function(err) {
         if(err) res.send(422);
         else {
-            req.session.member = req.body.member;
+            for(var key in req.body.member) {
+                req.session.member[key] = req.body.member[key];
+            }
             res.send(200);
         }
     });

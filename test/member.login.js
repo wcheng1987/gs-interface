@@ -43,7 +43,7 @@ describe('member', function() {
         it('#should authenticate with nickname', function(done) {
             auth({
                     identification: {
-                        username:"张三",
+                        username:"caohao",
                         password:"e10adc3949ba59abbe56e057f20f883e"
                     }
             })
@@ -51,7 +51,7 @@ describe('member', function() {
                 res.statusCode.should.equal(200);
                 res.should.be.json;
                 res.headers.should.have.property('set-cookie');
-                res.body.should.include("张三");
+                res.body.should.include("caohao");
                 done();
             })
         })
