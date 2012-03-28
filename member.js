@@ -13,9 +13,9 @@ exports.add = function(req, res) {
     var sql = "SELECT _id  FROM `gs_member` WHERE `username` = '"+
                 reg.username+"'";
     if(reg.email)
-        sql += " OR email = '"+reg.email+"'";
+        sql += " OR `email` = '"+reg.email+"'";
     else if(reg.phone)
-        sql += " OR phone = "+reg.phone;
+        sql += " OR `phone` = "+reg.phone;
     
     db.query(sql, function(err, rs) {
         if(db.errorHandle(err, rs, function(result) {
@@ -32,10 +32,12 @@ exports.add = function(req, res) {
                 }                             
                 db.insert(options,function(gid){
                     reg._id = gid;
-                    req.session.member = reg;
-                    var json = {member:{_id:gid, username:reg.username}};
-                    res.json(json, 201);
-                });
+                    req.session.regenerate(function() {
+                        req.session.member = reg;
+                        var json = {member:{_id:gid, username:reg.username}};
+                        res.json(json, 201);
+                    })
+                })
             }   
         }))
         {
@@ -90,20 +92,22 @@ exports.login=function(req, res){
         if(0 != rs[0].state) res.send(403);
         else{
             if(req.body.identification.password === rs[0].password){
-                req.session.member = rs[0];
                 var opt={
                     table: "gs_member",
                     fields:{lastlogintime:getNow()},
                     where:"_id="+rs[0]._id
                 }
                 db.update(opt,function(){
-                    var json = {
-                        member:{
-                            _id:rs[0]._id
-                            ,username:rs[0].username
+                    req.session.regenerate(function() {
+                        req.session.member = rs[0];
+                        var json = {
+                            member:{
+                                _id:rs[0]._id
+                                ,username:rs[0].username
+                            }
                         }
-                    }
-                    res.json(json);
+                        res.json(json);
+                    })
                 });
             }
             else{

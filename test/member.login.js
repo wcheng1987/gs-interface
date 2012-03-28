@@ -1,9 +1,5 @@
 var request = require('./support/http');
 
-function getCookie(res) {
-  return res.headers['set-cookie'][0].split(';')[0];
-}
-
 function auth(theID) {
     return  request()
             .post('/login')

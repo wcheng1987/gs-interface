@@ -35,7 +35,7 @@ function andRestrictAuth(req, res, next) {
 
 function andRestrictToSelf(req, res, next) {
     if(req.session.member &&
-       req.session.member._id == req.param.id) next();
+       req.session.member._id == req.params.id) next();
     else res.send(401);
     //next(new Error('Unauthorized'));
 }
