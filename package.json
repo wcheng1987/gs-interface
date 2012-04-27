@@ -6,7 +6,8 @@
       "express": ">= 2.5.1"
     , "jade": ">= 0.0.1"
     , "mysql": ">= 0.9.3"
-    ,"connect":">= 0.0.1"
+    , "connect":">= 0.0.1"
+    , "jsdom": ">= 0.2.14"
   }
   , "devDependencies": {
       "should": "*"
