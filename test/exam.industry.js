@@ -40,16 +40,17 @@ describe('industry', function(){
             .end(function(res){
                 res.should.be.json;
                 var json = JSON.parse(res.body);
+                console.log(res.body);
                 json.should.have.property('industry');
                 json.industry.should.not.be.empty;
                 done();
         
-                describe('#traverse examclass of industries', function() {
-                    json.industry.forEach(function(industry) {
-                        industry.should.have.property('examClass');
-                        industry.examClass.forEach(getExampaperList);
-                    })
-                })
+//                describe('#traverse examclass of industries', function() {
+//                    json.industry.forEach(function(industry) {
+//                        industry.should.have.property('examClass');
+//                        industry.examClass.forEach(getExampaperList);
+//                    })
+//                })
             })
         })
     })
