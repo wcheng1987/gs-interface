@@ -1,52 +1,10 @@
 var recordset = require('./recordset.js');
-/*
-var makeupExamSubjects = function(examClass, cb) {
-    var sql = "SELECT `_id`, `examclass_id`, `name`,`enname`,`regionlevel` "+
-              "FROM `gs_examsubjects`";
-    db.query(sql, function(err, rs) {
-        if(db.errorHandle(err, rs, function(status){cb(status)})){
-            rs.forEach(function(examSubject) {
-                examClass.some(function(ec) {
-                    if(examSubject.examclass_id == ec._id) {
-                        ec.examSubject = ec.examSubject||[];
-                        ec.examSubject.push(examSubject);
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                })
-            })
-            cb(200);
-        }
-    })
-}
 
-var makeupExamClass = function(industries, cb) {
-    var sql = "SELECT * FROM `gs_examclass`";
-    db.query(sql, function(err, rs) {
-        if(db.errorHandle(err, rs, function(status){cb(status)})){
-            rs.forEach(function(examClass) {
-                industries.some(function(industry) {
-                    if(examClass.industry_id == industry._id) {
-                        industry.examClass = industry.examClass||[];
-                        industry.examClass.push(examClass);
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                })
-            })
-            makeupExamSubjects(rs, cb);
-        }    
-    })    
-}
-*/
 exports.getIndustry = function(req, res) {
+    console.log("==getIndustry==");
     var sql = "SELECT * FROM `gs_industry`";
     recordset.db.query(sql , function(err, rs) {
-        if(recordset.db.errorHandle(err, rs, function(status){res.send(status)})){
+        if(recordset.db.errorHandle(err, rs, function(result){res.send(result.status)})){
             var param = {
                   sql: "SELECT `_id`, `examclass_id`, `name`,`enname`,`regionlevel` "+
                        "FROM `gs_examsubjects`"

@@ -65,16 +65,6 @@ app.get("/api/exampapers/:id",function (request, response) {
 });
 
 app.get("/api/industries/", examclass.getIndustry);
-/*app.get("/api/industries/",function (request, response) {
-                      examclass.select(request,function(result){
-                            //response.writeHead(result.status,result.reson,result.headers);
-                            if(result.body)
-                                 response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
-                            else
-                                 response.send(result.status);
-                      });
-});*/
-
 
 app.listen(1339);
 
