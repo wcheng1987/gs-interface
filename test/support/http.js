@@ -92,13 +92,13 @@ Request.prototype.end = function(fn){
       res.setEncoding('utf8');
       res.on('data', function(chunk){ buf += chunk });
       res.on('end', function(){
+        if (self.showRes) console.log(buf);
         if(0 == res.headers['content-type'].indexOf('application/json')) {
           res.body = JSON.parse(buf);  
         }
         else {
           res.body = buf;
         }
-        if (self.showRes) console.log("\nresponse body:",res.body);
         fn(res);
       });
     });

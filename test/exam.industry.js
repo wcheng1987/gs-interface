@@ -35,14 +35,13 @@ function getExampaperList(examClass) {
 describe('industry', function(){
     describe('#GET /industries/', function(){
         it('#should get the list of industry and class', function(done){
-            request()
+            request(true)
             .get('/industries/')
             .end(function(res){
                 res.should.be.json;
-                var json = JSON.parse(res.body);
-                console.log(res.body);
-                json.should.have.property('industry');
-                json.industry.should.not.be.empty;
+//                console.log(JSON.stringify(res.body));
+                res.body.should.have.property('industry');
+                res.body.industry.should.not.be.empty;
                 done();
         
 //                describe('#traverse examclass of industries', function() {
