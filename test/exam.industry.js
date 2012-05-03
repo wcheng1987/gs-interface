@@ -13,21 +13,20 @@ function getExampaper(paper) {
 
 function getExampaperList(examClass) {
     examClass.should.be.a('object').and.have.property('_id');
-    describe('#GET /exampapers/?examclass_id='+examClass._id, function() {
-        it('#should get the list of papers', function(done) {
+    describe('#GET examClass: '+examClass.name, function() {
+        examClass.examSubject.forEach(function(es) {
+        it('#should get the list of papers from /exampapers/?examsubject_id='+es._id, function(done) {
             request()
-            .get('/exampapers/?examclass_id='+examClass._id)
+            .get('/exampapers/?examsubject_id='+es._id)
             .end(function(res) {
                 if(res.statusCode == 200) {
-                    var json = JSON.parse(res.body);
-                    json.should.have.property('examPaper');
-                    json.examPaper.forEach(getExampaper);
+                    res.body.should.have.property('examPaper');
+//                    res.body.examPaper.forEach(getExampaper);
                 }
                 else res.should.have.status(204);
                 done();
-            })
-            
-            
+            });            
+        })
         })
     })
 }
@@ -35,7 +34,7 @@ function getExampaperList(examClass) {
 describe('industry', function(){
     describe('#GET /industries/', function(){
         it('#should get the list of industry and class', function(done){
-            request()
+            request(true)
             .get('/industries/')
             .end(function(res){
                 res.should.be.json;
@@ -43,12 +42,12 @@ describe('industry', function(){
                 res.body.industry.should.not.be.empty;
                 done();
         
-//                describe('#traverse examclass of industries', function() {
-//                    json.industry.forEach(function(industry) {
-//                        industry.should.have.property('examClass');
-//                        industry.examClass.forEach(getExampaperList);
-//                    })
-//                })
+                describe('#traverse examclass of industries', function() {
+                    res.body.industry.forEach(function(industry) {
+                        if(industry.examClass)
+                            industry.examClass.forEach(getExampaperList);
+                    })
+                })
             })
         })
     })

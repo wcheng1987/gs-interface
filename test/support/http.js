@@ -93,7 +93,8 @@ Request.prototype.end = function(fn){
       res.on('data', function(chunk){ buf += chunk });
       res.on('end', function(){
         if (self.showRes) console.log(buf);
-        if(0 == res.headers['content-type'].indexOf('application/json')) {
+        var ct = res.headers['content-type'];
+        if(ct && 0 <= ct.indexOf('json')) {
           res.body = JSON.parse(buf);  
         }
         else {
