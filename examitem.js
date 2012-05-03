@@ -1,5 +1,27 @@
 var db = require('./db.js');
+var jsdom = require('jsdom');
 
+var stem2Json = function(htmlString){
+    var doc = jsdom.jsdom(htmlString);
+    var body = doc.getElementsByTagName("body");
+    if(!body.length) {
+        var doc2 = jsdom.jsdom("<html><body>"+htmlString+"</body></html>");
+        body = doc2.getElementsByTagName("body")[0];
+    }
+
+    var json = {};
+    json.stemText = body.textContent;
+    var elements = body.getElementsByTagName("img");
+    for(var i = 0, length = elements.length; i < length; i++) { 
+        if(json.stemImages) {
+        	json.stemImages += '\r'+elements[i].getAttribute("src");
+        } else {
+            json.stemImages = elements[i].getAttribute("src");
+        }
+    }
+    console.log(json);
+    return json;
+}
 
 var errorHandle = function(err, rs, cb) {
 	var ret = true;
@@ -108,6 +130,11 @@ var queryItems = function(param, cb) {
 		param.msItemArr = [];
 		var item = param.rs[0];
 		result.map(function(set) {
+            var stem = stem2Json(set.content);
+            set.stemText = stem.stemText;
+            set.stemImages = stem.stemImages;
+            delete set.content;
+            
 			if(null != set.itemtype_id) {
 				item = someThing(item, param.rs, set.itemtype_id);
 				item.examItem.push(set);
