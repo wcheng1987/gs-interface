@@ -15,7 +15,8 @@ exports.getIndustry = function(req, res) {
             };    
             var examSubject = recordset(param);
     
-            param.sql = "SELECT * FROM `gs_examclass`";
+            param.sql = "SELECT `_id`, `industry_id`, `name`, `enname`, `examdate` AS examDate "+
+                        "FROM `gs_examclass`";
             param.next = examSubject;
             param.superObject = {
                   id:"industry_id"
