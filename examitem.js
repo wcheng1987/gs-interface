@@ -138,6 +138,7 @@ var queryItems = function(param, cb) {
 			if(null != set.itemtype_id) {
 				item = someThing(item, param.rs, set.itemtype_id);
 				item.examItem.push(set);
+                item.score += set.score;
 		//		delete item._id;
 				delete set.itemtype_id;
 			}
@@ -172,6 +173,7 @@ function packItems(param, cb) {
 		param.rs = result;
 		typeArr = param.rs.map(function(set) {
 			var _id = set._id;
+            set.score = 0;
 			set.examItem = [];
 			return _id;
 		});

@@ -2,10 +2,10 @@ var request = require('./support/http');
 var url = require('url');
 //var qs = require('querystring');
 
-function getImage(news) {
-    it('#should get NO.'+news._id+' userimage URL:'+news.userimage, function(done) {
+function getImage(img) {
+    it('#should get image from URL:'+img, function(done) {
         var req = request().get('/');
-        var imageurl = url.parse(news.userimage);
+        var imageurl = url.parse(img);
         req.addr.port = imageurl.port
         req.addr.address = imageurl.hostname
         req.path = imageurl.pathname;
@@ -25,13 +25,14 @@ function getNews(news) {
             .get('/newss/'+news._id)
             .expect(200,done)
         })
-//        if(news.userimage) getImage(news);
+        if(news.userimage) getImage(news.userimage);
+        if(news.imageurl) getImage(news.imageurl);
     })
 }
 
 describe('news', function() {
     describe('#news list', function() {
-        it('#should got the last 5 news', function(done) {
+        it('#should got the news', function(done) {
             request(true)
             .get('/newss/?start=1&&end=100&examclass_id=3')
             .end(function(res) {

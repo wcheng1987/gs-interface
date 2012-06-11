@@ -27,6 +27,8 @@ exports.list = function(req, res) {
             rs.forEach(function(news) {
                 if(news.imageurl) {
                     news.imageurl = env.imageBaseURL+news.imageurl;
+                }
+                if(news.userimage) {
                     news.userimage = env.imageBaseURL+news.userimage;
                 }
             });

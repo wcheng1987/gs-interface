@@ -14,20 +14,22 @@ function getExampaper(paper) {
 function getExampaperList(examClass) {
     examClass.should.be.a('object').and.have.property('_id');
     describe('#GET examClass: '+examClass.name, function() {
-        examClass.examSubject.forEach(function(es) {
-        it('#should get the list of papers from /exampapers/?examsubject_id='+es._id, function(done) {
-            request()
-            .get('/exampapers/?examsubject_id='+es._id)
-            .end(function(res) {
-                if(res.statusCode == 200) {
-                    res.body.should.have.property('examPaper');
+        if(examClass.examSubject) {
+            examClass.examSubject.forEach(function(es) {
+            it('#should get the list of papers from /exampapers/?examsubject_id='+es._id, function(done) {
+                request()
+                .get('/exampapers/?examsubject_id='+es._id)
+                .end(function(res) {
+                    if(res.statusCode == 200) {
+                        res.body.should.have.property('examPaper');
 //                    res.body.examPaper.forEach(getExampaper);
-                }
-                else res.should.have.status(204);
-                done();
-            });            
-        })
-        })
+                    }
+                    else res.should.have.status(204);
+                    done();
+                });            
+            })
+            })
+        }
     })
 }
 
