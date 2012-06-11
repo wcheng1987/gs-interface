@@ -1,5 +1,7 @@
 var db = require('./db.js');
 var jsdom = require('jsdom');
+var sanitize = require('validator').sanitize;
+
 
 var stem2Json = function(htmlString){
     var doc = jsdom.jsdom(htmlString);
@@ -10,7 +12,8 @@ var stem2Json = function(htmlString){
     }
 
     var json = {};
-    json.stemText = body.textContent;
+//    json.stemText = body.textContent;
+    json.stemText = sanitize(body.textContent).trim();
     var elements = body.getElementsByTagName("img");
     for(var i = 0, length = elements.length; i < length; i++) { 
         if(json.stemImages) {
