@@ -6,7 +6,7 @@ exports.getIndustry = function(req, res) {
     recordset.db.query(sql , function(err, rs) {
         if(recordset.db.errorHandle(err, rs, function(result){res.send(result.status)})){
             var param = {
-                  sql: "SELECT `_id`, `examclass_id`, `name`,`enname`,`regionlevel` "+
+                  sql: "SELECT `_id`, `examclass_id`, `name`,`enname`,`regionlevel` AS regionLevel "+
                        "FROM `gs_examsubjects`"
                 , superObject : {
                       id:"examclass_id"
