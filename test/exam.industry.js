@@ -17,7 +17,7 @@ function getExampaperList(examClass) {
         if(examClass.examSubject) {
             examClass.examSubject.forEach(function(es) {
             it('#should get the list of papers from /exampapers/?examsubject_id='+es._id, function(done) {
-                request()
+                request(true)
                 .get('/exampapers/?examsubject_id='+es._id)
                 .end(function(res) {
                     if(res.statusCode == 200) {
