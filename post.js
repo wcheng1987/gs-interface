@@ -1,8 +1,8 @@
 var fs = require('fs');
 var http = require('http');
 
-//var host = '127.0.0.1'
-var host = '192.168.0.115'
+var host = '127.0.0.1'
+//var host = '192.168.0.115'
 var port = 1339;
 //var path = '/api/members/619';
 var path = '/api/exam_records/';

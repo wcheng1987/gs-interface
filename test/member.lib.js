@@ -35,3 +35,11 @@ exports.register = function(data) { return  postData('/members/', data, ''); }
 exports.auth = function(data) { return  postData('/login', data, ''); }
 exports.update = function(id, data, sid) { return  putData('/members/'+id, data, sid); }
 exports.query = function(id, sid) {return getData('/members/'+id, sid);}
+exports.post = postData;
+exports.get = getData;
+exports.getNow=function(){
+        var now = new Date();
+        var year = now.getFullYear();
+        return (year+'-'+(now.getMonth()+1)+'-'+now.getDate()+' '+
+        now.getHours()+':'+now.getMinutes()+':'+now.getSeconds());
+}
