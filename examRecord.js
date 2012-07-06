@@ -54,23 +54,23 @@ var addItemRecord = function(gid, itemRecords, cb) {
 			//console.log(ir);
 			opt.fields = ir; 
 			db.insert(opt, function() {
-                if(ir.answers && ir.answers.length > 0) //multi-choose and blank
-                {
-                    addItemOptionRecord(gid, ir, function(result) {
-                        if(result.status >= 300 || ++done == len) cb(result);
-                    });
-                }
-                else if(ir.itemRecord) //multi-stem
-                {
-                    addItemRecord(gid, ir.itemRecord, function(result) {
-                        if(result.status >= 300 || ++done == len) cb(result);
-                    });
-                }
-                else //other
-                {
-                    if(++done == len) cb({status:201});
-                }
-            });
+                            if(ir.answers && ir.answers.length > 0) //multi-choose and blank
+                            {
+                                addItemOptionRecord(gid, ir, function(result) {
+                                    if(result.status >= 300 || ++done == len) cb(result);
+                                });
+                            }
+                            else if(ir.itemRecord && ir.itemRecord.length > 0) //multi-stem
+                            {
+                                addItemRecord(gid, ir.itemRecord, function(result) {
+                                    if(result.status >= 300 || ++done == len) cb(result);
+                                });
+                            }
+                            else //other
+                            {
+                                if(++done == len) cb({status:201});
+                            }
+                        });
 		}());
 	}
 }
@@ -78,26 +78,28 @@ var addItemRecord = function(gid, itemRecords, cb) {
 //add this examination record into examinfo
 var addRecord = function(record, member, cb) 
 {
-	var lid = record.lid;
-	delete record.lid;
+    var lid = record.lid;
+    delete record.lid;
     record.examinee_id = member._id;
-	var opt = {
-		table:"gs_examinfo"
-		,fields: record
-	};
-	db.insert(opt, function(gid) {
+    var opt = {
+            table:"gs_examinfo"
+            ,fields: record
+    };
+    db.insert(opt, function(gid) {
         bSend = false;
         addItemRecord(gid, record.itemRecord, function(result) {
+            console.log('send status', bSend);
             if(bSend) return;
             if(201 == result.status) result.json = {_id:gid, lid:lid};
             cb(result);
             bSend = true;
         });
-	});
+    });
 }
 
 exports.add = function(req, res) {
     console.log("==add examination record==");
+    console.log(JSON.stringify(req.body));
     addRecord(req.body, req.session.member, function(result) {
         if(201 == result.status) res.json(result.json, result.status);
         else res.send(result.status);
@@ -107,9 +109,8 @@ exports.add = function(req, res) {
 //makeup item records 
 var makeupItemRecord = function(ir, index, arr)
 {
-    var hasOption = (!ir.answer && !ir.textanswer && 6!=ir.type);
-    if(!ir.answer) delete ir.answer;
-    if(!ir.textanswer) delete ir.textanswer;
+    if(ir.type != 1 && ir.type != 3) delete ir.answer;
+    if(ir.type != 5) delete ir.textanswer;
     if(6 == ir.type) //multi-stem
     {
         delete ir.type;
@@ -139,7 +140,7 @@ var makeupItemRecord = function(ir, index, arr)
         }
     };
     
-    if(hasOption)
+    if(ir.type == 2 || ir.type == 4)//multi-select or blank
     {
         var kThis = this;
         var sql = "SELECT answer FROM `gs_examoptionanswer` WHERE "+
@@ -176,7 +177,7 @@ var makeupItemRecord = function(ir, index, arr)
 //makeup record
 var makeupRecord = function(record)
 {
-    var sql = "SELECT t1.item_id, t1.parent_id as record_id, t1.answer,"+
+    var sql = "SELECT t1._id, t1.item_id, t1.parent_id as record_id, t1.answer,"+
                 " t1.textanswer, t1.score, t2.type, t2.parent_id "+
                 "FROM `gs_examitemanswer` as t1, `gs_examitem` as t2 "+
                 "WHERE t2._id = t1.item_id AND t1.`parent_id` = "+record._id;

@@ -48,8 +48,10 @@ describe('## Upload data record of examinations', function() {
     it('#Should Login success', function(done) {
         member.auth({
                 identification: {
-                    username:"gaojun",
-                    password:"a85327a74b957ae06c652294934cc59a"
+                    username:"18912345678",
+                    password:"e10adc3949ba59abbe56e057f20f883e"
+//                    username:"gaojun",
+//                    password:"a85327a74b957ae06c652294934cc59a"
                 }
         })
         .end(function(res) {
@@ -58,7 +60,7 @@ describe('## Upload data record of examinations', function() {
             res.headers.should.have.property('set-cookie');
             res.body.should.have.property('member');
             var sid = member.getSID(res);
-            generateRecord(17, sid, done);
+            generateRecord(1, sid, done);
             //done();
         })
     });

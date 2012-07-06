@@ -1,27 +1,15 @@
-var request = require('./support/http');
+var member = require('./member.lib.js');
 
-function auth(theID) {
-    return  request()
-            .post('/login')
-            .set('content-type', 'application/json')
-            .write(JSON.stringify(theID));
+var getNow=function(){
+    var now = new Date();
+    return now.toString();
 }
 
-describe('member', function() {
+describe('##member', function() {
     var cookie;
     describe('#login unit test', function() {
-        it('#should can not authenticate for wrong email', function(done) {
-            auth({
-                    identification: {
-                        username:"do_not_exist@gste.com",
-                        password:"e10adc3949ba59abbe56e057f20f883e"
-                    }
-            })
-            .expect(404, done);
-        })
-
         it('#should can not authenticate for wrong password', function(done) {
-            auth({
+            member.auth({
                     identification: {
                         username:"gbo@gste.com",
                         password:"this is wrong password"
@@ -31,7 +19,7 @@ describe('member', function() {
         })
 
         it('#should can not authenticate for forbidden', function(done) {
-            auth({
+            member.auth({
                     identification: {
                         username:"forbiddenUser",
                         password:"e10adc3949ba59abbe56e057f20f883e"
@@ -41,7 +29,7 @@ describe('member', function() {
         })
 
         it('#should authenticate with nickname', function(done) {
-            auth({
+            member.auth({
                     identification: {
                         username:"caohao",
                         password:"e10adc3949ba59abbe56e057f20f883e"
@@ -51,13 +39,13 @@ describe('member', function() {
                 res.statusCode.should.equal(200);
                 res.should.be.json;
                 res.headers.should.have.property('set-cookie');
-                res.body.should.include("caohao");
+                res.body.should.have.property('member');
                 done();
             })
         })
         
         it('#should authenticate with email', function(done) {
-            auth({
+            member.auth({
                     identification: {
                         username:"gbo@gste.com",
                         password:"e10adc3949ba59abbe56e057f20f883e"
@@ -67,13 +55,13 @@ describe('member', function() {
                 res.statusCode.should.equal(200);
                 res.should.be.json;
                 res.headers.should.have.property('set-cookie');
-                res.body.should.include("张三");
+                res.body.should.have.property('member');
                 done();
             })
         })
         
         it('#should authenticate with phone', function(done) {
-            auth({
+            member.auth({
                     identification: {
                         username:"18912345678",
                         password:"e10adc3949ba59abbe56e057f20f883e"
@@ -83,9 +71,27 @@ describe('member', function() {
                 res.statusCode.should.equal(200);
                 res.should.be.json;
                 res.headers.should.have.property('set-cookie');
-                res.body.should.include("张三");
+                res.body.should.have.property('member');
                 done();
             })
         })
+        
+        it('#should register and login with new account', function(done) {
+            var user = "user"+getNow();
+            //console.log(user);
+            member.auth({
+                    identification: {
+                        username:user,
+                        password:"e10adc3949ba59abbe56e057f20f883e"
+                    }
+            })
+            .end(function(res) {
+                res.statusCode.should.equal(201);
+                res.should.be.json;
+                res.headers.should.have.property('set-cookie');
+                res.body.should.have.property('member');
+                done();
+            })
+        });
     })
 })

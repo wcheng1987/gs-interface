@@ -37,6 +37,7 @@ exports.update = function(id, data, sid) { return  putData('/members/'+id, data,
 exports.query = function(id, sid) {return getData('/members/'+id, sid);}
 exports.post = postData;
 exports.get = getData;
+exports.put = putData;
 exports.getNow=function(){
         var now = new Date();
         var year = now.getFullYear();

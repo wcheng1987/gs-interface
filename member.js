@@ -7,6 +7,26 @@ var getNow=function(){
         now.getHours()+':'+now.getMinutes()+':'+now.getSeconds());
 }
 
+function register(req, res) {
+    var reg = req.body.register;
+    reg.regtime = getNow();
+    reg.lastlogintime = reg.regtime;
+    reg.state = 0;
+    reg.type = 0;
+    var options={
+        table: "gs_member",
+        fields:reg
+    }                             
+    db.insert(options,function(gid){
+        reg._id = gid;
+        req.session.regenerate(function() {
+            req.session.member = reg;
+            var json = {member:{_id:gid, username:reg.username}};
+            res.json(json, 201);
+        })
+    })
+}
+
 exports.add = function(req, res) {
     console.log("==add new member==");
     var reg = req.body.register;
@@ -19,26 +39,8 @@ exports.add = function(req, res) {
     
     db.query(sql, function(err, rs) {
         if(db.errorHandle(err, rs, function(result) {
-            if(result.status != 204) {
-                res.send(result.status);
-            }
-            else {
-                reg.regtime = getNow();
-                reg.state = 0;
-                reg.type = 0;
-                options={
-                    table: "gs_member",
-                    fields:reg
-                }                             
-                db.insert(options,function(gid){
-                    reg._id = gid;
-                    req.session.regenerate(function() {
-                        req.session.member = reg;
-                        var json = {member:{_id:gid, username:reg.username}};
-                        res.json(json, 201);
-                    })
-                })
-            }   
+            if(result.status != 204) res.send(result.status);
+            else register(req, res);
         }))
         {
             console.log(rs);
@@ -86,10 +88,11 @@ exports.login=function(req, res){
         sql += "username = '"+id.username+"'"
           
     db.query(sql,function(err, rs){
-        if(!db.errorHandle(err, rs, function(result) {
-            if(result.status == 204) result.status = 404;
-            res.send(result.status);
-        })) return;
+        if(err) return next(err);
+        if(!rs.length) {
+            req.body.register = req.body.identification;
+            return register(req, res);
+        }
         console.log("login==", rs);
         if(0 != rs[0].state) res.send(403);
         else{
