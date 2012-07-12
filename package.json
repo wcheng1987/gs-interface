@@ -9,6 +9,7 @@
     , "connect":">= 0.0.1"
     , "validator": "0.3.7"
     , "jsdom": ">= 0.2.14"
+    , "eventproxy": ">= 0.1.0"
   }
   , "devDependencies": {
       "should": "*"

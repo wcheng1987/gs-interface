@@ -44,3 +44,24 @@ exports.getNow=function(){
         return (year+'-'+(now.getMonth()+1)+'-'+now.getDate()+' '+
         now.getHours()+':'+now.getMinutes()+':'+now.getSeconds());
 }
+
+exports.afterLogin = function(cb) {
+        exports.auth({
+                identification: {
+                    username:"123@",
+                    password:"e10adc3949ba59abbe56e057f20f883e"
+//                    username:"18912345678",
+//                    password:"e10adc3949ba59abbe56e057f20f883e"
+//                    username:"gaojun",
+//                    password:"a85327a74b957ae06c652294934cc59a"
+                }
+        })
+        .end(function(res) {
+            res.statusCode.should.equal(200);
+            res.should.be.json;
+            res.headers.should.have.property('set-cookie');
+            res.body.should.have.property('member');
+            var sid = exports.getSID(res);
+            cb(sid, res.body.member);
+        })
+}

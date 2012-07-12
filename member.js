@@ -1,4 +1,5 @@
 var db = require('./db.js');
+var EventProxy = require("eventproxy").EventProxy;
 
 var getNow=function(){
         var now = new Date();
@@ -119,5 +120,39 @@ exports.login=function(req, res){
                 res.send(401);
             }
         }
+    });
+}
+
+exports.friends = function(req, res) {
+    var id = req.params.id;
+    var ep = new EventProxy();
+    
+    ep.assign('friends', 'groups', function(friends, groups) {
+        friends.forEach(function(friend) {
+            groups.some(function(group) {
+                if(group._id == friend.group_id) {
+                    delete friend.group_id;
+                    if(!group.friend) group.friend = [];
+                    group.friend.push(friend);
+                    return true;
+                }
+                else return false;
+            });
+        });
+        
+        var json = {member:{_id:id, friendgroup:groups}};
+        return res.json(json);
+    });
+    
+    var sql = "SELECT `_id`,`name` FROM `gs_friendgroup` WHERE `member_id`="+id;
+    db.query(sql, function(err, groups) {
+        if(err) return next(err);        
+        ep.trigger('groups', groups);
+    });
+    
+    sql = "SELECT m.*,`group_id` FROM `gs_friends` AS f, `gs_member` AS m WHERE f.`member2_id`=m.`_id` AND f.`member1_id`="+id;
+    db.query(sql, function(err, friends) {
+        if(err) return next(err);
+        ep.trigger('friends', friends);
     });
 }

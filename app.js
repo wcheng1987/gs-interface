@@ -48,6 +48,7 @@ app.post("/api/members/", member.add);
 app.post("/api/login", member.login);
 app.get("/api/members/:id", andRestrictToSelf, member.query);
 app.put("/api/members/:id", andRestrictToSelf, member.update);
+app.get("/api/members/:id/friends", andRestrictToSelf, member.friends);
 
 app.get("/api/exampapers/", exampaper.query);
 
