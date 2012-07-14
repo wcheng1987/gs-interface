@@ -176,7 +176,7 @@ function packItems(param, cb) {
 		param.rs = result;
 		typeArr = param.rs.map(function(set) {
 			var _id = set._id;
-            set.score = 0;
+                        set.score = 0;
 			set.examItem = [];
 			return _id;
 		});

@@ -1,6 +1,5 @@
 var request = require('./support/http');
 var url = require('url');
-//var qs = require('querystring');
 
 function getImage(img) {
     it('#should get image from URL:'+img, function(done) {
@@ -19,30 +18,28 @@ function getImage(img) {
 }
 
 function getNews(news) {
-    describe('#get News detail', function() {
+    describe('#News detail', function() {
         it('#should get NO.'+news._id+' news detail', function(done) {
             request(true)
             .get('/newss/'+news._id)
             .expect(200,done)
         })
-        if(news.userimage) getImage(news.userimage);
-        if(news.imageurl) getImage(news.imageurl);
+        //if(news.userimage) getImage(news.userimage);
+        //if(news.imageurl) getImage(news.imageurl);
     })
 }
 
-describe('news', function() {
-    describe('#news list', function() {
-        it('#should got the news', function(done) {
-            request(true)
-            .get('/newss/?start=1&&end=100&examclass_id=3')
-            .end(function(res) {
-                res.should.have.status(200)
+describe('#News', function() {
+    it('#should got the news list', function(done) {
+        request(true)
+        .get('/newss/?start=1&&end=100&examclass_id=3')
+        .end(function(res) {
+            res.should.have.status(200)
 
-                res.body.should.have.property('news')
-                res.body.news.forEach(getNews);
+            res.body.should.have.property('news')
+            res.body.news.forEach(getNews);
 
-                done();
-            })
+            done();
         })
     })
 })

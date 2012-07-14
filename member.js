@@ -1,5 +1,6 @@
 var db = require('./db.js');
 var EventProxy = require("eventproxy").EventProxy;
+var env = require('env.json');
 
 var getNow=function(){
         var now = new Date();
@@ -154,5 +155,73 @@ exports.friends = function(req, res) {
     db.query(sql, function(err, friends) {
         if(err) return next(err);
         ep.trigger('friends', friends);
+    });
+}
+
+exports.audioPaper = function(req, res, next) {
+    var id = req.params.id;
+    var ep = new EventProxy();
+    
+    ep.assign('member', 'words', function(member, words) {
+        return res.json({member:member, word:words});
+    });
+    
+    ep.assign('site', 'audio_paper', function(sites, audioPaper) {
+        audioPaper.forEach(function(ap) {
+            sites.some(function(site) {
+                if(site._id == ap.site_id) {
+                    delete ap.site_id;
+                    delete ap.src_id;
+                    delete ap.creator_id;
+                    if(!site.audio_paper) site.audio_paper = [];
+                    site.audio_paper.push(ap);
+                    return true;
+                }
+                else return false;
+            });
+        });
+        ep.trigger('member', {_id:id, english_site:sites});
+    });
+    
+    var sql = "SELECT `_id`,`begintime`,`endtime`,`replaycount`,`interval` FROM `gs_englishsite` WHERE `creator_id`="+id;
+    db.query(sql, function(err, sites) {
+        if(err) return next(err);        
+        ep.trigger('site', sites);
+    });
+    
+    var sql = "SELECT * FROM `gs_audiopapercopy` WHERE `creator_id`="+id;
+    db.query(sql, function(err, audioPaper) {
+        if(err) return next(err);        
+        ep.after('word_question', audioPaper.length, function(data) {
+            ep.trigger('audio_paper', audioPaper);
+        });
+        audioPaper.forEach(makeupAudioPaper);
+    });
+    
+    function makeupAudioPaper(audioPaper) {
+        sql = "SELECT `wordid` AS word_id, `sort` FROM `gs_audiopapercopyword` WHERE `papercopy_id` = "+audioPaper._id;
+        db.query(sql, function(err, words) {
+            if(err) return next(err);
+            audioPaper.word_question = words
+            ep.trigger('word_question', audioPaper);
+        });
+    }
+    
+    ep.assign('audio_paper', function(audioPaper) {
+        var wordIDs = [0];
+        audioPaper.forEach(function(ap) {
+            var ids = ap.word_question.map(function(wq) {
+                return wq.word_id;
+            });
+            wordIDs = wordIDs.concat(ids);
+        });
+        sql = 'SELECT DISTINCT *  FROM `gs_word` WHERE `_id` IN ('+wordIDs+')';
+        db.query(sql, function(err, words) {
+            if(err) return next(err);
+            words.forEach(function(word) {
+                word.audio = env.audioBase+word.audio;
+            });
+            ep.trigger('words', words);            
+        });
     });
 }

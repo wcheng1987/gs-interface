@@ -5,8 +5,8 @@ function rand(l, u) {
 }
 
 function queryInfo(phoneNumber, kID, sid) {
-    describe('query info of user', function() {
-        it('#should query info of user', function(done) {
+    describe('#Member query info of user', function() {
+        it('should query info of user', function(done) {
             member.query(kID, sid)
             .end(function(res) {
                 res.statusCode.should.equal(200);
@@ -21,35 +21,35 @@ function queryInfo(phoneNumber, kID, sid) {
 }
 
 function registerDone(phoneNumber) {
-    describe('login', function() {
-    it('#should success login', function(done) {
-        member.auth({
-            identification: {
-                username:phoneNumber.toString(),
-                password:"e10adc3949ba59abbe56e057f20f883e"
-            }
-        })
-        .end(function(res) {
-            res.statusCode.should.equal(200);
-            res.headers.should.have.property('set-cookie');
-            res.body.should.have.property('member');
-            var kID = res.body.member._id;
-            var sid = member.getSID(res);
-            queryInfo(phoneNumber, kID, sid);
-            describe('update info of user', function() {
-                it('#should update info of user', function(done) {
-                    res.body.member.email = phoneNumber+"@gste.com";
-                    member.update(kID, res.body, sid)
-                    .end(function(res) {
-                        res.statusCode.should.equal(200);
-                        queryInfo(phoneNumber, kID, sid);
-                        done();
+    describe('#Member login after register', function() {
+        it('should success login', function(done) {
+            member.auth({
+                identification: {
+                    username:phoneNumber.toString(),
+                    password:"e10adc3949ba59abbe56e057f20f883e"
+                }
+            })
+            .end(function(res) {
+                res.statusCode.should.equal(200);
+                res.headers.should.have.property('set-cookie');
+                res.body.should.have.property('member');
+                var kID = res.body.member._id;
+                var sid = member.getSID(res);
+                queryInfo(phoneNumber, kID, sid);
+                describe('#Member update info of user', function() {
+                    it('should update info of user', function(done) {
+                        res.body.member.email = phoneNumber+"@gste.com";
+                        member.update(kID, res.body, sid)
+                        .end(function(res) {
+                            res.statusCode.should.equal(200);
+                            queryInfo(phoneNumber, kID, sid);
+                            done();
+                        })
                     })
                 })
+                done();
             })
-            done();
         })
-    })
     })
     
 }
@@ -79,8 +79,8 @@ function register(done) {
     })
 }
 
-describe('member by pass', function() {
-    it('#should have success register new user with phone', function(done) {
+describe('#Member', function() {
+    it('should have success register new user with phone', function(done) {
         register(done);
     })    
 })
