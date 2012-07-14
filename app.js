@@ -8,7 +8,7 @@ var examitem = require('./examitem.js');
 var examRecord = require('./examRecord.js');
 var member = require('./member.js');
 var location = require('./location.js');
-
+var fs = require('./fileServer.js');
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -68,6 +68,8 @@ app.get("/api/exampapers/:id",function (request, response) {
 });
 app.get("/api/industries/", examclass.getIndustry);
 app.get('/api/locations/', location.index);
+
+app.get('/files/:type?/*', fs.get);
 
 app.listen(1339);
 

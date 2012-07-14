@@ -219,7 +219,7 @@ exports.audioPaper = function(req, res, next) {
         db.query(sql, function(err, words) {
             if(err) return next(err);
             words.forEach(function(word) {
-                word.audio = env.audioBase+word.audio;
+                word.audio = env.hostURL + env.files.audio.base+word.audio;
             });
             ep.trigger('words', words);            
         });
