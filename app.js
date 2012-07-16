@@ -69,8 +69,7 @@ app.get("/api/exampapers/:id",function (request, response) {
 app.get("/api/industries/", examclass.getIndustry);
 app.get('/api/locations/', location.index);
 
-app.get('/files/:type?/*', fs.get);
-
+app.get('/files/:type?/*', andRestrictAuth, fs.get);
 app.listen(1339);
 
 console.log("GSTE server listening on port %d in %s mode", 
