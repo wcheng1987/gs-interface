@@ -3,9 +3,9 @@
   , "version": "0.0.2"
   , "private": true
   , "dependencies": {
-      "express": ">= 2.5.1"
+      "express": "= 2.5.1"
     , "jade": ">= 0.0.1"
-    , "mysql": ">= 0.9.3"
+    , "mysql": "= 0.9.3"
     , "connect":">= 0.0.1"
     , "validator": "0.3.7"
     , "jsdom": ">= 0.2.14"

@@ -60,11 +60,13 @@ function getAudioFiles(sid, words) {
                 var pathname = url.parse(word.audio).pathname;
                 var basename = path.basename(pathname);
                 pathname = __dirname+'/words/'+basename;
+                var ws = fs.createWriteStream(pathname);
                 r(word.audio, function(err, res, body) {
                     res.statusCode.should.equal(200);
                     res.should.have.header('content-length');
+                    var ct = parseInt(res.headers['content-length']);
                     fs.stat(pathname, function(ferr, stats) {
-                        stats.size.should.equal(parseInt(res.headers['content-length']));
+                        stats.size.should.equal(ct);
                         done();
                     });
                 })

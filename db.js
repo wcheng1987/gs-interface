@@ -20,8 +20,8 @@ exports.errorHandle = function(err, rs, cb) {
 }
 
 exports.query = function(sql, cb) { 
-	console.log(sql);
-	client.query(sql, function(err, rs, fields) {
+    console.log(sql);
+    return client.query(sql, function(err, rs, fields) {
         if(err) console.log(err.stack);
         cb(err, rs, fields);
     });
