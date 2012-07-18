@@ -1,3 +1,4 @@
 *.svn/
 log/
 node_modules/
+test/words/
