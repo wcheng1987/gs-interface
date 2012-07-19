@@ -149,10 +149,9 @@ exports.insert = function(options, cb) {
         console.log(sql);
         console.log(values);
         client.query(sql, values, function(err, info) {
-                if(err) throw err;
-                var a=options.cbParam;
-                console.log(info.insertId,a);
-                cb(info.insertId,a);
+            if(err) console.log(err.stack);
+            var a=options.cbParam;
+            cb(info.insertId,a);
         });
 };
 

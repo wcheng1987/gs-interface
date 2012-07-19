@@ -40,6 +40,9 @@ function getAudioPaper(sid, theMember) {
                 res.statusCode.should.equal(200);
                 res.should.be.json;
                 res.body.should.have.property('member');
+                if(undefined != res.body.member.audioPaper) {
+                    postListeningRecords(sid, res.body.member.audioPaper);
+                }
                 if(undefined != res.body.word) {
                     getAudioFiles(sid, res.body.word);
                 }
@@ -73,5 +76,42 @@ function getAudioFiles(sid, words) {
                 .pipe(fs.createWriteStream(pathname));
             });
         });
+    });
+}
+
+function generateRecord(audioPaper) {
+    var site = audioPaper.englishSite;
+    var duration = site.replayCount*site.interval;
+    var writeRecord = {
+        paper_id:audioPaper._id,
+        beginTime:member.getNow(),
+        endTime:member.getNow(duration),
+        item:[]
+    };
+    audioPaper.wordQuestion.forEach(function(word) {
+        var item = {
+            word_id:word.word_id,
+            right:0,
+            answer:'test',
+            sort:word.sort
+        };
+        writeRecord.item.push(item);
+    });
+    return writeRecord;
+}
+
+function postListeningRecords(sid, audioPaper) {
+    describe('#Member, Listening records', function() {
+        audioPaper.forEach(function(ap) {
+            it('Should Success Add new record of listening of Audio Paper:'+ap.name, function(done) {
+                var writeRecord = generateRecord(ap);
+                member.post('/write_records', {writeRecord:writeRecord}, sid)
+                .end(function(res) {
+                    res.statusCode.should.equal(201);
+                    res.body.should.have.property('writeRecord');
+                    done();
+                });
+            });
+        });    
     });
 }

@@ -38,8 +38,10 @@ exports.query = function(id, sid) {return getData('/members/'+id, sid);}
 exports.post = postData;
 exports.get = getData;
 exports.put = putData;
-exports.getNow=function(){
+exports.getNow=function(offset){
         var now = new Date();
+        var offsetTime = offset|| 0;
+        now.setTime(now.getTime+offsetTime*1000);
         var year = now.getFullYear();
         return (year+'-'+(now.getMonth()+1)+'-'+now.getDate()+' '+
         now.getHours()+':'+now.getMinutes()+':'+now.getSeconds());
