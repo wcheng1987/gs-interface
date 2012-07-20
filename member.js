@@ -128,7 +128,7 @@ exports.login=function(req, res){
 }
 
 exports.friends = function(req, res) {
-    var id = req.params.id;
+    var id = parseInt(req.params.id);
     var ep = new EventProxy();
     
     ep.assign('friends', 'groups', function(friends, groups) {
@@ -162,7 +162,7 @@ exports.friends = function(req, res) {
 }
 
 exports.audioPaper = function(req, res, next) {
-    var id = req.params.id;
+    var id = parseInt(req.params.id);
     var ep = new EventProxy();
     var wordIDs = [0];
     
