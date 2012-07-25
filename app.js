@@ -59,8 +59,6 @@ app.put("/api/exam_records/", andRestrictAuth, examRecord.sync);
 
 app.get("/api/exampapers/:id",function (request, response) {
                       examitem.packData(request,function(result){
-                      //examitem.select(request,function(result){
-                           // response.send(result.reson,result.status);
                             if(result.body)
                                  response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
                             else
@@ -71,9 +69,11 @@ app.get("/api/industries/", examclass.getIndustry);
 app.get('/api/locations/', location.index);
 
 app.post('/api/write_records', listeningRecord.add);
+app.put('/api/write_records', listeningRecord.sync);
 
 app.get('/files/:type?/*', andRestrictAuth, fs.get);
 app.listen(1339);
+
 
 console.log("GSTE server listening on port %d in %s mode", 
                 app.address().port, app.settings.env);
