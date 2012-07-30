@@ -97,8 +97,10 @@ function generateRecord(audioPaper) {
         };
         writeRecord.item.push(item);
     });
+    //console.log(JSON.stringify(writeRecord));
     return writeRecord;
 }
+
 
 function postListeningRecords(sid, audioPaper) {
     describe('#Member, Listening records', function() {
@@ -115,3 +117,5 @@ function postListeningRecords(sid, audioPaper) {
         });    
     });
 }
+
+exports.generateRecord = generateRecord;

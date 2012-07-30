@@ -62,25 +62,31 @@ exports.sync = function(req, res, next) {
     var memberID = req.session.member._id;
     
     var ep = new EventProxy();
-    ep.assign('commited_resp', 'write_record', 'member', 'words_done', function(resp, wr, member, word) {
+    ep.assign('commited_resp', 'write_record', 'members_done', 'words_done', function(resp, wr, member, word) {
         if(word) json.word = word;
         return res.json(json);
     });
     
     var findPaper = function(ids) {
-        sql = 'SELECT DISTINCT `creator_id` FROM `gs_audiopaper` WHERE `_id` IN ('+ids+')';
-        db.query(sql, function(err, rs) {
-            if(err) return next(err);
-            var wids = [];
-            ep.after('member', rs.length, function(data) {
-                json.member = data;
-                audioPaper.findWordByIDs(wids, ep, next);
+        if(ids.length > 0) {
+            sql = 'SELECT DISTINCT `creator_id` FROM `gs_audiopaper` WHERE `_id` IN ('+ids+')';
+            db.query(sql, function(err, rs) {
+                if(err) return next(err);
+                var wids = [];
+                ep.after('member', rs.length, function(data) {
+                    json.member = data;
+                    audioPaper.findWordByIDs(wids, ep, next);
+                    ep.trigger('members_done');
+                });
+                ep.assign('word_id', function(wordIDs) {
+                    wids = wids.concat(wordIDs);
+                });
+                rs.forEach(function(member) {audioPaper.findByMember(member.creator_id, ep, next);});
             });
-            ep.assign('word_id', function(wordIDs) {
-                wids = wids.concat(wordIDs);
-            });
-            rs.forEach(function(member) {audioPaper.findByMember(member.creator_id, ep, next);});
-        });
+        } else {//no paper need to be download
+            ep.trigger('members_done');
+            ep.trigger('words_done');
+        }
     };    
     var findRecordItem = function(record) {
         sql = 'SELECT `wordid` AS word_id, `rightanswer` AS `right`, `answer`, `sortno` AS sort '+
@@ -96,7 +102,7 @@ exports.sync = function(req, res, next) {
     //find all write record which client does not known
     sql = 'SELECT `paper_id`, `_id`, `begintime` AS beginTime, `endtime` AS endTime FROM `gs_writerecord` '+
           'WHERE `state` = 100 AND `writer_id` = '+memberID;
-    if(commited.length > 0) sql += ' _id NOT IN ('+commited+')';
+    if(commited.length > 0) sql += ' AND `_id` NOT IN ('+commited+')';
     db.query(sql, function(err, rs) {
         if(err) return next(err);
         ep.after('write_record_item', rs.length, function(data) {
@@ -115,7 +121,7 @@ exports.sync = function(req, res, next) {
         ep.trigger('commited_resp');
     });
     records.forEach(function(record) {
-        paperIDsOfClient.push(record.paper_id);//find paper which client has known
+        //paperIDsOfClient.push(record.paper_id);//find paper which client has known
         record.writeRecord.writer_id = req.session.member._id;
         insertOne(record.writeRecord, function(data) {
             commitedResp.push({lid:record.lid, _id:record.writeRecord._id});

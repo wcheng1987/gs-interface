@@ -41,8 +41,8 @@ exports.findByMember = function(id, ep2, next) {
     db.query(sql, function(err, audioPaper) {
         if(err) return next(err);        
         ep.after('word_question', audioPaper.length, function(data) {
-            ep.trigger('audio_paper', audioPaper);
             ep2.trigger('word_id', wordIDs);
+            ep.trigger('audio_paper', audioPaper);
         });
         audioPaper.forEach(makeupAudioPaper);
     });
