@@ -20,7 +20,7 @@ function Request(showRes) {
   this.addr = {
       port:1339,
 //      address:'192.168.0.115'
-//      address:'180.96.19.107'
+//      address:'42.121.17.154'
   };
   this.showRes = showRes || true; 
 }

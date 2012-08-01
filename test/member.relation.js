@@ -110,7 +110,7 @@ function postListeningRecords(sid, audioPaper) {
                 member.post('/write_records', {writeRecord:writeRecord}, sid)
                 .end(function(res) {
                     res.statusCode.should.equal(201);
-                    res.body.should.have.property('writeRecord');
+                    res.body.should.have.property('created');
                     done();
                 });
             });

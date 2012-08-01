@@ -48,7 +48,7 @@ exports.add = function(req, res, next) {
     writeRecord.writer_id = req.session.member._id;
     
     insertOne(writeRecord, function(data) {
-        return res.json({writeRecord:{_id:writeRecord._id}}, 201);
+        return res.json({created:{_id:writeRecord._id}}, 201);
     });
 };
 
