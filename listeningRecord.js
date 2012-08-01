@@ -44,7 +44,7 @@ var insertOne = function(writeRecord, cb) {
 };
 
 exports.add = function(req, res, next) {
-    var writeRecord = req.body.writeRecord;
+    var writeRecord = req.body;
     writeRecord.writer_id = req.session.member._id;
     
     insertOne(writeRecord, function(data) {

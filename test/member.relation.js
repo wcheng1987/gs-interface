@@ -107,7 +107,7 @@ function postListeningRecords(sid, audioPaper) {
         audioPaper.forEach(function(ap) {
             it('Should Success Add new record of listening of Audio Paper:'+ap.name, function(done) {
                 var writeRecord = generateRecord(ap);
-                member.post('/write_records', {writeRecord:writeRecord}, sid)
+                member.post('/write_records', writeRecord, sid)
                 .end(function(res) {
                     res.statusCode.should.equal(201);
                     res.body.should.have.property('created');

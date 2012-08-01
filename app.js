@@ -68,8 +68,8 @@ app.get("/api/exampapers/:id",function (request, response) {
 app.get("/api/industries/", examclass.getIndustry);
 app.get('/api/locations/', location.index);
 
-app.post('/api/write_records', listeningRecord.add);
-app.put('/api/write_records', listeningRecord.sync);
+app.post('/api/write_records', andRestrictAuth,listeningRecord.add);
+app.put('/api/write_records', andRestrictAuth, listeningRecord.sync);
 
 app.get('/files/:type?/*', andRestrictAuth, fs.get);
 app.listen(1339);
