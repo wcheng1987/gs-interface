@@ -93,7 +93,7 @@ exports.sync = function(req, res, next) {
         paperIDs.push(record.paper_id);
     };    
     //find all write record which client does not known
-    sql = 'SELECT `paper_id`, `_id`, `begintime` AS beginTime, `endtime` AS endTime FROM `gs_writerecord` '+
+    sql = 'SELECT `paper_id`, `writer_id`, `_id`, `begintime` AS beginTime, `endtime` AS endTime FROM `gs_writerecord` '+
           'WHERE `state` = 100 AND `writer_id` = '+memberID;
     if(commited.length > 0) sql += ' AND `_id` NOT IN ('+commited+')';
     db.query(sql, function(err, rs) {
