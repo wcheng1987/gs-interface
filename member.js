@@ -163,15 +163,8 @@ exports.friends = function(req, res) {
 
 exports.audioPaper = function(req, res, next) {
     var id = parseInt(req.params.id);
-    var ep = new EventProxy();
     
-    ep.assign('member', 'words_done', function(member, words) {
-        return res.json({member:member, word:words});
-    });
-    
-    ep.assign('word_id', function(wordIDs) {
-        audioPaper.findWordByIDs(wordIDs, ep, next);
-    });
-    
-    audioPaper.findByMember(id, ep, next);
+    audioPaper.findByMember(id, function(json) {
+        return res.json(json);
+    }, next);
 }

@@ -56,33 +56,26 @@ exports.sync = function(req, res, next) {
     var records = req.body.uncommit||[];
     var commited = req.body.commited||[];
     var json = {};
-    var commitedResp = [];
+    var created = [];
     var paperIDs = [];
     var sql = '';
     var memberID = req.session.member._id;
     
     var ep = new EventProxy();
-    ep.assign('commited_resp', 'write_record', 'members_done', 'words_done', function(resp, wr, member, word) {
+    ep.assign('created', 'write_record', 'members_done', 'words_done', function(created, wr, member, word) {
+        if(created) json.created = created;
+        if(wr) json.writeRecord = wr;
+        if(member) json.member = member;
         if(word) json.word = word;
         return res.json(json);
     });
     
     var findPaper = function(ids) {
         if(ids.length > 0) {
-            sql = 'SELECT DISTINCT `creator_id` FROM `gs_audiopaper` WHERE `_id` IN ('+ids+')';
-            db.query(sql, function(err, rs) {
-                if(err) return next(err);
-                var wids = [];
-                ep.after('member', rs.length, function(data) {
-                    json.member = data;
-                    audioPaper.findWordByIDs(wids, ep, next);
-                    ep.trigger('members_done');
-                });
-                ep.assign('word_id', function(wordIDs) {
-                    wids = wids.concat(wordIDs);
-                });
-                rs.forEach(function(member) {audioPaper.findByMember(member.creator_id, ep, next);});
-            });
+            audioPaper.find({query:{_id:{$in:ids}}}, function(members, words) {
+                ep.trigger('members_done', members);
+                ep.trigger('words_done', words);
+            }, next);
         } else {//no paper need to be download
             ep.trigger('members_done');
             ep.trigger('words_done');
@@ -106,9 +99,9 @@ exports.sync = function(req, res, next) {
     db.query(sql, function(err, rs) {
         if(err) return next(err);
         ep.after('write_record_item', rs.length, function(data) {
-            if(rs.length > 0) json.writeRecord = rs;
-            console.log('write_record');
-            ep.trigger('write_record', rs);
+//            if(rs.length > 0) json.writeRecord = rs;
+//            console.log('write_record');
+            ep.trigger('write_record', rs.length > 0?rs:null);
         });
         rs.forEach(findRecordItem);
         findPaper(paperIDs);
@@ -116,15 +109,15 @@ exports.sync = function(req, res, next) {
 
     //insert commit new records
     ep.after('record', records.length, function() {
-        if(commitedResp.length > 0) json.commitedResp = commitedResp;
-        console.log('commited_resp');
-        ep.trigger('commited_resp');
+//        if(commitedResp.length > 0) json.commitedResp = commitedResp;
+//        console.log('commited_resp');
+        ep.trigger('created', created.length>0?created:null);
     });
     records.forEach(function(record) {
         //paperIDsOfClient.push(record.paper_id);//find paper which client has known
         record.writeRecord.writer_id = req.session.member._id;
         insertOne(record.writeRecord, function(data) {
-            commitedResp.push({lid:record.lid, _id:record.writeRecord._id});
+            created.push({lid:record.lid, _id:record.writeRecord._id});
             ep.trigger('record', record.writeRecord);
         });
     });

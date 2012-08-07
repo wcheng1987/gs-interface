@@ -44,7 +44,7 @@ function sync(sid, theMember) {
             .end(function(res) {
                 res.statusCode.should.equal(200);
                 res.should.be.json;
-                res.body.should.have.property('commitedResp');
+                res.body.should.have.property('created');
                 res.body.should.have.property('writeRecord');
                 done();
             });
