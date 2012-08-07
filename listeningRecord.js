@@ -63,6 +63,7 @@ exports.sync = function(req, res, next) {
     
     var ep = new EventProxy();
     ep.assign('created', 'write_record', 'members_done', 'words_done', function(created, wr, member, word) {
+        if(!created && !wr && !member && !word) return res.send(204);
         if(created) json.created = created;
         if(wr) json.writeRecord = wr;
         if(member) json.member = member;
