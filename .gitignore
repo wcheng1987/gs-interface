@@ -1,5 +1,9 @@
+.nide/
 *.svn/
 log/
 node_modules/
 test/words/
 gs-interface.js
+.nide
+
+.npmignore

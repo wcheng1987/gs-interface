@@ -44,7 +44,7 @@ function getAudioPaper(sid, theMember) {
                     postListeningRecords(sid, res.body.member.audioPaper);
                 }
                 if(undefined != res.body.word) {
-                    getAudioFiles(sid, res.body.word);
+                    //getAudioFiles(sid, res.body.word);
                 }
                 done();
             });
@@ -65,6 +65,7 @@ function getAudioFiles(sid, words) {
                 pathname = __dirname+'/words/'+basename;
                 var ws = fs.createWriteStream(pathname);
                 r(word.audio, function(err, res, body) {
+//                    console.log(err);
                     res.statusCode.should.equal(200);
                     res.should.have.header('content-length');
                     var ct = parseInt(res.headers['content-length']);
@@ -73,7 +74,7 @@ function getAudioFiles(sid, words) {
                         done();
                     });
                 })
-                .pipe(fs.createWriteStream(pathname));
+                .pipe(ws);
             });
         });
     });
