@@ -9,6 +9,7 @@ var examRecord = require('./examRecord.js');
 var member = require('./member.js');
 var location = require('./location.js');
 var listeningRecord = require('./listeningRecord.js');
+var listeningErrorRedoRecord = require('./listeningErrorRedoRecord.js');
 var fs = require('./fileServer.js');
 
 app.configure(function(){
@@ -70,6 +71,8 @@ app.get('/api/locations/', location.index);
 
 app.post('/api/write_records', andRestrictAuth,listeningRecord.add);
 app.put('/api/write_records', andRestrictAuth, listeningRecord.sync);
+
+app.post('/api/error_write_records', andRestrictAuth,listeningErrorRedoRecord.add);
 
 app.get('/files/:type?/*', andRestrictAuth, fs.get);
 app.listen(1339);
