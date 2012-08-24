@@ -40,12 +40,17 @@ function getAudioPaper(sid, theMember) {
                 res.statusCode.should.equal(200);
                 res.should.be.json;
                 res.body.should.have.property('member');
-                if(undefined != res.body.member.audioPaper) {
+/*                if(undefined != res.body.member.audioPaper) {
                     postListeningRecords(sid, res.body.member.audioPaper);
                 }
                 if(undefined != res.body.word) {
                     //getAudioFiles(sid, res.body.word);
-                }
+                }*/
+                res.body.member.should.have.property('audioPaper');
+                console.log("audioPapers:");
+                res.body.member.audioPaper.forEach(function(ap) {
+                    console.log(ap.name);
+                });
                 done();
             });
         })

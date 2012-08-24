@@ -1,9 +1,8 @@
 var db = require('./db.js');
 var EventProxy = require("eventproxy").EventProxy;
 var env = require('env.json');
-var audioPaper = require('./audioPaper.js');
 
-var insertOne = function(errorWriteRecord, cb) {
+exports.insertOne = insertOne = function(errorWriteRecord, cb) {
     var opt = {
         table:'gs_errorwriterecord',
         fields: {
@@ -44,3 +43,49 @@ exports.add = function(req, res, next) {
         return res.json({created:{_id:errorWriteRecord._id}}, 201);
     });
 };
+
+exports.insertRecords = function(records, memberID, cb) {
+    var ep = new EventProxy();
+    records = records ||[];
+    ep.after('record', records.length, function(created) {
+        cb(created);
+    });
+    records.forEach(function(record) {
+        record.data.writer_id = memberID;
+        insertOne(record.data, function(_id) {
+            ep.trigger('record', {lid:record.lid, _id:_id});
+        });
+    });
+}
+
+exports.find = function(opt, cb, next) {
+    var sql = '';
+    var ep = new EventProxy();
+    var paperIDs = [];
+
+    var findRecordItem = function(record) {
+        sql = 'SELECT `word_id`, `rightanswer` AS `right`, `answer`, `sortno` AS sort '+
+              'FROM `gs_errorwriterecorditem` WHERE `parent_id` = '+record._id;
+        db.query(sql, function(err, rs) {
+            if(err) return next(err);
+            record.item = rs;
+            ep.trigger('error_write_record_item', rs);
+        });
+        //find paper that client may not know
+        paperIDs.push(record.paper_id);
+        delete record.paper_id;
+    };    
+    
+    sql = 'SELECT t1.`record_id`, t1.`_id`, t1.`begintime` AS beginTime, t1.`endtime` AS endTime, t2.`paper_id` '+
+          'FROM `gs_errorwriterecord` AS t1, `gs_writerecord` AS t2 '+
+          'WHERE t1.`state` = 100 AND t1.`record_id` = t2.`_id` AND t2.`writer_id` ='+opt.writer_id;
+    if(opt.commited && opt.commited.length > 0) sql += ' AND t1.`_id` NOT IN ('+opt.commited+')';
+    db.query(sql, function(err, rs) {
+        if(err) return next(err);
+        ep.after('error_write_record_item', rs.length, function(data) {
+            //console.log("record.paper_id:", paperIDs);
+            cb(rs, paperIDs);
+        });
+        rs.forEach(findRecordItem);
+    }); 
+}
