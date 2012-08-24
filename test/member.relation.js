@@ -21,12 +21,14 @@ function getFriends(sid, theMember) {
                 res.statusCode.should.equal(200);
                 res.should.be.json;
                 res.body.should.have.property('member');
+                done();
                 res.body.member.friendgroup.forEach(function(group) {
                     group.friend.forEach(function(friend) {
-                        getAudioPaper(sid, friend);
+                        var times = 1;
+                        if(friend._id === 70) times = 3;
+                        for(var i =0; i < times;i++) getAudioPaper(sid, friend);
                     });
                 });
-                done();
             });
         })
     })
@@ -49,8 +51,14 @@ function getAudioPaper(sid, theMember) {
                 res.body.member.should.have.property('audioPaper');
                 console.log("audioPapers:");
                 res.body.member.audioPaper.forEach(function(ap) {
-                    console.log(ap.name);
+                    if(ap._id === 175) ap.name.should.be.equal('bbb');
+                    if(ap._id === 190) ap.name.should.be.equal('12333');
+                    console.log(ap._id, ap.name, ap.englishSite._id);
                 });
+                res.body.member.should.have.property('_id');
+                if(res.body.member._id === 70) {
+                    res.body.member.should.have.property('audioPaper').with.lengthOf(2);
+                }
                 done();
             });
         })
