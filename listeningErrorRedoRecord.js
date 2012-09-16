@@ -17,7 +17,9 @@ exports.insertOne = insertOne = function(errorWriteRecord, cb) {
         errorWriteRecord._id = _id;
         
         var ep = new EventProxy();
-        ep.after('item', errorWriteRecord.item.length, cb);
+        ep.after('item', errorWriteRecord.item.length, function(item_ids) {
+            cb(_id);
+        });
         
         errorWriteRecord.item.forEach(function(item) {
             opt.table = 'gs_errorwriterecorditem';
@@ -29,7 +31,7 @@ exports.insertOne = insertOne = function(errorWriteRecord, cb) {
                 sortno:item.sort
             };
             db.insert(opt, function(item_id) {
-                ep.trigger('item', item);
+                ep.trigger('item', item_id);
             });
         });
     });    
