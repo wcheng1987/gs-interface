@@ -23,11 +23,13 @@ function getFriends(sid, theMember) {
                 res.body.should.have.property('member');
                 done();
                 res.body.member.friendgroup.forEach(function(group) {
-                    group.friend.forEach(function(friend) {
-                        var times = 1;
-                        if(friend._id === 70) times = 1;
-                        for(var i =0; i < times;i++) getAudioPaper(sid, friend);
-                    });
+                    if(group.friend) {
+                        group.friend.forEach(function(friend) {
+                            var times = 1;
+                            if(friend._id === 70) times = 1;
+                            for(var i =0; i < times;i++) getAudioPaper(sid, friend);
+                        });
+                    }
                 });
             });
         })
