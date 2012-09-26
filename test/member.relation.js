@@ -25,7 +25,7 @@ function getFriends(sid, theMember) {
                 res.body.member.friendgroup.forEach(function(group) {
                     group.friend.forEach(function(friend) {
                         var times = 1;
-                        if(friend._id === 70) times = 3;
+                        if(friend._id === 70) times = 1;
                         for(var i =0; i < times;i++) getAudioPaper(sid, friend);
                     });
                 });
@@ -44,10 +44,10 @@ function getAudioPaper(sid, theMember) {
                 res.body.should.have.property('member');
 /*                if(undefined != res.body.member.audioPaper) {
                     postListeningRecords(sid, res.body.member.audioPaper);
-                }
-                if(undefined != res.body.word) {
-                    //getAudioFiles(sid, res.body.word);
                 }*/
+                if(undefined != res.body.word) {
+                    getAudioFiles(sid, res.body.word);
+                }
                 res.body.member.should.have.property('audioPaper');
                 console.log("audioPapers:");
                 res.body.member.audioPaper.forEach(function(ap) {
@@ -55,10 +55,10 @@ function getAudioPaper(sid, theMember) {
                     if(ap._id === 190) ap.name.should.be.equal('12333');
                     console.log(ap._id, ap.name, ap.englishSite._id);
                 });
-                res.body.member.should.have.property('_id');
+/*                res.body.member.should.have.property('_id');
                 if(res.body.member._id === 70) {
                     res.body.member.should.have.property('audioPaper').with.lengthOf(2);
-                }
+                }*/
                 done();
             });
         })
@@ -77,7 +77,7 @@ function getAudioFiles(sid, words) {
                 var basename = path.basename(pathname);
                 pathname = __dirname+'/words/'+basename;
                 var ws = fs.createWriteStream(pathname);
-                r(word.audio, function(err, res, body) {
+                r(encodeURI(word.audio), function(err, res, body) {
 //                    console.log(err);
                     res.statusCode.should.equal(200);
                     res.should.have.header('content-length');

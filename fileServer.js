@@ -10,7 +10,8 @@ exports.get = function(req, res, next) {
     var end = ranges[1] ? parseInt(ranges[1]) : 0;
     
     path = path.replace(file.base, file.root);
-    //console.log(path, start, end);
+    path = decodeURI(path);
+//    console.log(path, start, end);
     
     res.sendfile(path, {start:start, end:end});
 };
