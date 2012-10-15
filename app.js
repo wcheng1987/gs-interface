@@ -11,6 +11,7 @@ var location = require('./location.js');
 var listeningRecord = require('./listeningRecord.js');
 var listeningErrorRedoRecord = require('./listeningErrorRedoRecord.js');
 var fs = require('./fileServer.js');
+var env = require('env.json');
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -75,7 +76,7 @@ app.put('/api/write_records', andRestrictAuth, listeningRecord.sync);
 app.post('/api/error_write_records', andRestrictAuth,listeningErrorRedoRecord.add);
 
 app.get('/files/:type?/*', andRestrictAuth, fs.get);
-app.listen(1339);
+app.listen(env.port);
 
 
 console.log("GSTE server listening on port %d in %s mode", 
