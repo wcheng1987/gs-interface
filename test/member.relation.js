@@ -47,16 +47,16 @@ function getAudioPaper(sid, theMember) {
 /*                if(undefined != res.body.member.audioPaper) {
                     postListeningRecords(sid, res.body.member.audioPaper);
                 }*/
-                if(undefined != res.body.word) {
-                    getAudioFiles(sid, res.body.word);
-                }
+                // if(undefined != res.body.word) {
+                //     getAudioFiles(sid, res.body.word);
+                // }
                 res.body.member.should.have.property('audioPaper');
-                console.log("audioPapers:");
-                res.body.member.audioPaper.forEach(function(ap) {
-                    if(ap._id === 175) ap.name.should.be.equal('bbb');
-                    if(ap._id === 190) ap.name.should.be.equal('12333');
-                    console.log(ap._id, ap.name, ap.englishSite._id);
-                });
+                // console.log("audioPapers:");
+                // res.body.member.audioPaper.forEach(function(ap) {
+                //     if(ap._id === 175) ap.name.should.be.equal('bbb');
+                //     if(ap._id === 190) ap.name.should.be.equal('12333');
+                //     console.log(ap._id, ap.name, ap.englishSite._id);
+                // });
 /*                res.body.member.should.have.property('_id');
                 if(res.body.member._id === 70) {
                     res.body.member.should.have.property('audioPaper').with.lengthOf(2);

@@ -50,13 +50,13 @@ exports.getNow=function(offset){
 exports.afterLogin = function(cb) {
         exports.auth({
                 identification: {
-//                    username:"123@",
-//                    password:"e10adc3949ba59abbe56e057f20f883e"
+                    username:"123@",
+                    password:"e10adc3949ba59abbe56e057f20f883e"
 //                    username:"18912345678",
 //                    password:"e10adc3949ba59abbe56e057f20f883e"
-					username:"746905262@qq.com",
+					// username:"746905262@qq.com",
 //username:"gaojun",
-                    password:"a85327a74b957ae06c652294934cc59a"
+                    // password:"a85327a74b957ae06c652294934cc59a"
                 }
         })
         .end(function(res) {

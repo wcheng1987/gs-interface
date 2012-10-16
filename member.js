@@ -132,17 +132,29 @@ exports.friends = function(req, res) {
     var ep = new EventProxy();
     
     ep.assign('friends', 'groups', function(friends, groups) {
+		var ungroup = {
+			_id: 200000000, //for database, it does not conside app client situation, so group should not exceed 0.2 billion
+			name: "未分组",
+			friend:[]
+		};
+		ungroup._id += id;
         friends.forEach(function(friend) {
-            groups.some(function(group) {
-                if(group._id == friend.group_id) {
-                    delete friend.group_id;
-                    if(!group.friend) group.friend = [];
-                    group.friend.push(friend);
-                    return true;
-                }
-                else return false;
-            });
+			if(!friend.group_id) {
+                delete friend.group_id;
+				ungroup.friend.push(friend);
+			} else {
+	            groups.some(function(group) {
+	                if(group._id == friend.group_id) {
+	                    delete friend.group_id;
+	                    if(!group.friend) group.friend = [];
+	                    group.friend.push(friend);
+	                    return true;
+	                }
+	                else return false;
+	            });
+			}
         });
+		if(ungroup.friend.length > 0) groups.push(ungroup);
         
         var json = {member:{_id:id, friendgroup:groups}};
         return res.json(json);
