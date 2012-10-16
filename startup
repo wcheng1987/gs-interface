@@ -1,10 +1,21 @@
 #!/bin/bash
-AppName=gs-interface.js
-pkill -9 -f $AppName
+if [ ! "$1" ]; then
+  NodeEnv="development"
+else
+  NodeEnv="$1"
+fi
+export NODE_ENV=$NodeEnv
+
+AppName=gs-interface-$NodeEnv.js
+#pkill -9 -f $AppName
+forever stop $AppName
 
 cp app.js $AppName
 mkdir -p log
-mv log/app.log log/app`date +%Y%m%d%H%M%S`.log
-node $AppName > log/app.log 2>&1 &
+#mv log/app.log log/app`date +%Y%m%d%H%M%S`.log
+mv log/out.log log/old.log
+mv log/err.log log/oldErr.log
+forever start -l log/forever.log -o log/out.log -e log/err.log $AppName
+#node $AppName > log/app.log 2>&1 &
 sleep 3
 netstat -ntl
