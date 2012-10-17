@@ -128,7 +128,7 @@ exports.findWordByIDs = function(wordIDs, ep2, next) {
     
     ep.assign('words', 'part_of_speech', function(words, partOfSpeeches) {
         words.forEach(function(word) {
-            word.audio = "http://"+env.host+":"+env.port+files.audio.base+word.audio;
+            word.audio = "http://"+env.host+":"+env.port+env.files.audio.base+word.audio;
             word.partOfSpeech = [];
             partOfSpeeches.some(function(partOfSpeech, index, arr) {//filter the part of speech for this word
                 if(partOfSpeech.word_id === word._id) {
