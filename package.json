@@ -7,6 +7,7 @@
     , "jade": ">= 0.0.1"
     , "mysql": "= 0.9.3"
     , "connect":">= 0.0.1"
+    , "connect-redis": "1.4.0"
     , "validator": "0.3.7"
     , "jsdom": ">= 0.2.14"
     , "eventproxy": ">= 0.1.0"

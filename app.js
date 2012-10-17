@@ -1,4 +1,5 @@
 var express = require('express');
+var RedisStore = require('connect-redis')(express);
 var app = module.exports = express.createServer();
 
 var news = require('./news.js');
@@ -18,7 +19,12 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.cookieParser())
-  app.use(express.session({ secret: 'keyboard cat'}))
+  // app.use(express.session({ secret: 'keyboard cat'}))
+  app.use(express.session({
+	  store: new RedisStore({host:env.redis.host}),
+	  secret: env.session_secret,
+	  cookie: env.session_cookie
+  }));
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
