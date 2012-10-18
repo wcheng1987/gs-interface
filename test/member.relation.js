@@ -7,8 +7,10 @@ var url = require('url');
 describe('#Member Relationship Test', function() {
     it('Should Login as member', function(done) {
         member.afterLogin(function(sid, theMember) {
-            getFriends(sid, theMember);
             done();
+            var times = 1;
+            // if(theMember._id === 4) times = 1;
+            for(var i =0; i < times;i++) getFriends(sid, theMember);
         });
     })
 })
@@ -25,9 +27,7 @@ function getFriends(sid, theMember) {
                 res.body.member.friendgroup.forEach(function(group) {
                     if(group.friend) {
                         group.friend.forEach(function(friend) {
-                            var times = 1;
-                            if(friend._id === 70) times = 1;
-                            for(var i =0; i < times;i++) getAudioPaper(sid, friend);
+                            getAudioPaper(sid, friend);
                         });
                     }
                 });
@@ -58,7 +58,7 @@ function getAudioPaper(sid, theMember) {
                 //     console.log(ap._id, ap.name, ap.englishSite._id);
                 // });
 /*                res.body.member.should.have.property('_id');
-                if(res.body.member._id === 70) {
+                if(res.body.member._id === 4) {
                     res.body.member.should.have.property('audioPaper').with.lengthOf(2);
                 }*/
                 done();
