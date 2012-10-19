@@ -20,22 +20,9 @@ exports.errorHandle = function(err, rs, cb) {
 }
 
 exports.query = function(sql, cb) { 
-    var start = Date.now();
+    console.log(sql);
     return client.query(sql, function(err, rs, fields) {
-        console.log(sql + ' ' + (Date.now() - start) + 'ms');
-		if(err) {
-		    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-		        console.log('MySQL connection lost. Reconnecting.');
-		        client = mysql.createClient(env.mysql);
-		    } else if (err.code === 'ECONNREFUSED') {
-		        console.log('MySQL connection refused. Trying soon again.');
-		        setTimeout(function() {
-		            client = mysql.createClient(env.mysql);
-		        }, 3000);
-		    } else {
-				console.log(err.stack);
-			}
-		}
+        if(err) console.log(err.stack);
         cb(err, rs, fields);
     });
 }
