@@ -1,31 +1,90 @@
 var mysql = require('mysql');
 var env = require('env.json');
-var client = mysql.createClient(env.mysql);
+
+var connection = connect();
 
 process.env.TZ = env.mysql.timezone;
-client.utc=true;
+//connection.utc=true;
 
-exports.errorHandle = function(err, rs, cb) {
-	var ret = true;
-	if(err) {
-		cb({status:500});
-		ret = false;
-	}
-	else if(rs.length == 0 && !rs.allowNull) {
-		console.log("can not find record");
-		cb({status:204});
-		ret = false;
-	}	
-	return ret;
+function connect() {
+    var connection = mysql.createConnection(env.mysql);
+
+    connection.connect();
+    connection.on('error', errorHandler);
+
+    return connection;
 }
 
-exports.query = function(sql, cb) { 
-    console.log(sql);
-    return client.query(sql, function(err, rs, fields) {
-        if(err) console.log(err.stack);
-        cb(err, rs, fields);
+// Error handler for uncaught MySql errors.
+
+function errorHandler(err) {
+
+    console.log('MySQL error ' + err);
+
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+        console.log('MySQL connection lost. Reconnecting.');
+        connection = connect();
+    } else if (err.code === 'ECONNREFUSED') {
+        console.log('MySQL connection refused. Trying soon again.');
+        setTimeout(function() {
+            connection = connect();
+        }, 3000);
+    }
+}
+
+// For general queries. Delegates to
+// client.query.
+
+function query(sql, params, cb) {
+    var start = Date.now();
+    connection.query(sql, params, function(err, data) {
+        console.log(sql + ' ' + (Date.now() - start) + 'ms');
+        if (err) {
+            console.log('MySQL error ' + err);
+        }
+        cb(err, data);
     });
 }
+
+// Closes connection.
+
+function close() {
+    connection.end();
+}
+
+// Queries single row.
+
+function single(sql, params, cb) {
+    query(sql, params, function(err, results) {
+        if (err) {
+            cb(err);
+        } else if (results.length === 0) {
+            cb(null);
+        } else {
+            cb(null, results[0]);
+        }
+    });
+}
+
+// Helper method to execute aggregate queries
+// such as SELECT COUNT(*).
+
+function scalar(sql, params, cb) {
+    single(sql, params, function(err, row) {
+        if (err) {
+            cb(err);
+        } else if (row) {
+            cb(null, row[Object.keys(row)[0]]);
+        } else {
+            cb(null);
+        }
+    });
+}
+
+exports.query = query;
+exports.close = close;
+exports.single = single;
+exports.scalar = scalar;
 
 exports.find = function(opt, cb) {
     var sql = "SELECT ";
@@ -58,7 +117,22 @@ exports.find = function(opt, cb) {
             sql += ' '+f+' '+opt.order[f];
         }
     }
-    exports.query(sql, cb);
+    query(sql, cb);
+}
+
+//TODO: refactory following code
+exports.errorHandle = function(err, rs, cb) {
+	var ret = true;
+	if(err) {
+		cb({status:500});
+		ret = false;
+	}
+	else if(rs.length == 0 && !rs.allowNull) {
+		console.log("can not find record");
+		cb({status:204});
+		ret = false;
+	}	
+	return ret;
 }
 
 exports.select2 = function(o, cb) {
@@ -78,7 +152,7 @@ exports.select2 = function(o, cb) {
                 sql +=' limit '+o.start+','+o.end;
         }   
         console.log(sql);
-        client.query(sql,  function(err, result, fields) {
+        connection.query(sql,  function(err, result, fields) {
                 if(err) throw err;
                 console.log(result);
                 len=result.length;
@@ -99,7 +173,7 @@ exports.select2 = function(o, cb) {
                                  result[len+i]=re[i];
                                  if(++done >= lem){
                                         cb(result);
-//                                        client.end();
+//                                        connection.end();
                                  }
                           
                           }
@@ -107,7 +181,7 @@ exports.select2 = function(o, cb) {
                 }
                 else
                       cb(result);
-//              client.end();
+//              connection.end();
         });
 };
 
@@ -126,11 +200,11 @@ var select3 = function(o, cb) {
                 sql +=' limit '+o.start+','+o.end;
         }
         console.log(sql);
-        client.query(sql,  function(err, result, fields) {
+        connection.query(sql,  function(err, result, fields) {
                 if(err) throw err;
                 console.log(result);
                 cb(result);
-//              client.end();
+//              connection.end();
         });
 };
 
@@ -154,9 +228,9 @@ exports.select1 = function(options,cb) {
         }
         sql = sql.slice(0,-4);
         console.log(sql);
-        client.query(sql, function(err,result) {
+        connection.query(sql, function(err,result) {
                 if(err) throw err;
-//                client.end();
+//                connection.end();
                 var a=options.cbParam;
                 var b=options.cba;
                 var c=options.cb;
@@ -182,7 +256,7 @@ exports.insert = function(options, cb) {
         sql = sql.slice(0,-2);
         console.log(sql);
         console.log(values);
-        client.query(sql, values, function(err, info) {
+        connection.query(sql, values, function(err, info) {
             if(err) console.log(err.stack);
             var a=options.cbParam;
             cb(info.insertId,a);
@@ -214,7 +288,7 @@ exports.update = function(options, cb) {
         }
         console.log(sql);
         console.log(values);
-        client.query(sql, values, function(err, info) {
+        connection.query(sql, values, function(err, info) {
                 if(err) throw err;
                 var a=options.b;
                 cb(a);
