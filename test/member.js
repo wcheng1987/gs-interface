@@ -13,7 +13,7 @@ function queryInfo(phoneNumber, kID, sid) {
                 res.should.be.json;
                 res.body.member.should.be.a('object').and.have.property('_id', kID);
                 res.body.member.should.have.property('username', phoneNumber.toString());
-                res.body.member.should.have.property('phone', phoneNumber);
+                res.body.member.should.have.property('phone', phoneNumber.toString());
                 done();
             })
         })
