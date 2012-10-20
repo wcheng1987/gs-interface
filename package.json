@@ -1,5 +1,6 @@
 {
     "name": "gs-interface"
+  , "description": "Goldstone Education mobile service"
   , "version": "1.1.1"
   , "private": true
   , "dependencies": {
@@ -13,8 +14,12 @@
     , "eventproxy": ">= 0.1.0"
   }
   , "devDependencies": {
-      "should": "*"
+	  "mocha": "*"
+    , "should": "*"
     , "request": ">= 2.9.0"
+  }
+  , "scripts": {
+    "test": "make test"
   }
 }
 
