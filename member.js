@@ -82,7 +82,7 @@ exports.update = function(req, res) {
     });
 }
 
-exports.login=function(req, res){
+exports.login=function(req, res, next){
     var id = req.body.identification;
     var sql = "select * from gs_member where "
     if(id.username.search("@") >= 0)
@@ -92,28 +92,27 @@ exports.login=function(req, res){
     else
         sql += "username = '"+id.username+"'"
           
-    db.query(sql,function(err, rs){
+    db.findOne(sql,function(err, user){
         if(err) return next(err);
-        if(!rs.length) {
+        if(!user) {
             req.body.register = req.body.identification;
             return register(req, res);
         }
-        console.log("login==", rs);
-        if(0 != rs[0].state) res.send(403);
-        else{
-            if(req.body.identification.password === rs[0].password){
+        console.log("Login User==", user);
+        if(0 === user.state) { //0 == active user
+            if(req.body.identification.password === user.password){
                 var opt={
                     table: "gs_member",
                     fields:{lastlogintime:getNow()},
-                    where:"_id="+rs[0]._id
+                    where:"_id="+user._id
                 }
                 db.update(opt,function(){
                     req.session.regenerate(function() {
-                        req.session.member = rs[0];
+                        req.session.member = user;
                         var json = {
                             member:{
-                                _id:rs[0]._id
-                                ,username:rs[0].username
+                                _id:user._id
+                                ,username:user.username
                             }
                         }
                         res.json(json);
@@ -124,6 +123,9 @@ exports.login=function(req, res){
                 res.send(401);
             }
         }
+        else{
+			res.send(403);
+		}
     });
 }
 

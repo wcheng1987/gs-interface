@@ -37,6 +37,10 @@ function errorHandler(err) {
 
 function query(sql, params, cb) {
     var start = Date.now();
+	if (typeof params === 'function') {
+		cb = params;
+	    params = undefined;
+	} 
     connection.query(sql, params, function(err, data) {
         console.log(sql + ' ' + (Date.now() - start) + 'ms');
         if (err) {
@@ -54,7 +58,11 @@ function close() {
 
 // Queries single row.
 
-function single(sql, params, cb) {
+function findOne(sql, params, cb) {
+	if (typeof params === 'function') {
+		cb = params;
+	    params = undefined;
+	} 
     query(sql, params, function(err, results) {
         if (err) {
             cb(err);
@@ -83,7 +91,7 @@ function scalar(sql, params, cb) {
 
 exports.query = query;
 exports.close = close;
-exports.single = single;
+exports.findOne = findOne;
 exports.scalar = scalar;
 
 exports.find = function(opt, cb) {
