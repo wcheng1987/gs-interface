@@ -21,7 +21,7 @@
   , "scripts": {
     "test": "make test"
   }
-  , "main": "app"
+  , "main": "./app.js"
   , "engines": { "node": ">= 0.8.12" }
 }
 
