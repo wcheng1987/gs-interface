@@ -77,7 +77,10 @@ function getAudioFiles(sid, words) {
             it('Should GET audio file:'+word.word, function(done) {
                 var pathname = url.parse(word.audio).pathname;
                 var basename = path.basename(pathname);
-                pathname = __dirname+'/words/'+basename;
+				pathname = __dirname+'/words/';
+				if (!fs.existsSync(pathname)) fs.mkdirSync(pathname);
+				pathname += basename;
+				if (fs.existsSync(pathname)) return done();
                 var ws = fs.createWriteStream(pathname);
                 r(encodeURI(word.audio), function(err, res, body) {
 //                    console.log(err);

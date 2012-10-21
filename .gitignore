@@ -3,6 +3,7 @@
 log/
 node_modules/
 test/words/
+test/acceptance/words/
 gs-interface-*.js
 .nide
 

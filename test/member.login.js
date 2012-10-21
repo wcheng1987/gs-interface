@@ -10,7 +10,7 @@ describe('##Member Login', function() {
     it('#should can not authenticate for wrong password', function(done) {
         member.auth({
                 identification: {
-                    username:"gbo@gste.com",
+                    username:"123@",
                     password:"this is wrong password"
                 }
         })

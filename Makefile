@@ -14,7 +14,7 @@ test-acceptance:
 	@NODE_ENV=test ./node_modules/.bin/mocha \
 		--reporter $(REPORTER) \
 		--bail \
-		test/*.js
+		test/acceptance/*.js
 
 test-cov: lib-cov
 	@EXPRESS_COV=1 $(MAKE) test REPORTER=html-cov > coverage.html
