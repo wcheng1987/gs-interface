@@ -4,5 +4,7 @@ node_js:
   - 0.6
 before_script:
   - mysql -e 'create database goldstone;'
+after_script:
+  - cp env.default.json node_modules/env.json
 services:
   - redis-server
