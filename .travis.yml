@@ -1,10 +1,9 @@
 # .travis.yml
 language: node_js
 node_js:
-  - 0.6
+  - 0.8
 before_script:
   - mysql -e 'create database goldstone;'
-after_script:
   - cp env.default.json node_modules/env.json
 services:
   - redis-server
