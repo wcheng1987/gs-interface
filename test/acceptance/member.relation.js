@@ -47,11 +47,11 @@ function getAudioPaper(sid, theMember) {
                 res.body.should.have.property('member');
 /*                if(undefined != res.body.member.audioPaper) {
                     postListeningRecords(sid, res.body.member.audioPaper);
-                }*/
+                }
                 if(undefined != res.body.word) {
                     getAudioFiles(sid, res.body.word);
                 }
-                res.body.member.should.have.property('audioPaper');
+                res.body.member.should.have.property('audioPaper');*/
                 // console.log("audioPapers:");
                 // res.body.member.audioPaper.forEach(function(ap) {
                 //     if(ap._id === 175) ap.name.should.be.equal('bbb');
