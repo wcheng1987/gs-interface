@@ -3,8 +3,8 @@
  * Module dependencies.
  */
 
-var EventEmitter = require('events').EventEmitter
-  , http = require('http');
+var EventEmitter = require('events').EventEmitter;
+var http = require('http');
   
 var env =require('../../node_modules/env.json');
 
