@@ -1,3 +1,4 @@
+var app = require('../..');
 var member = require('./member.lib.js');
 var request = require('request');
 var fs = require('fs');
