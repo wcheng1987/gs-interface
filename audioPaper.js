@@ -18,7 +18,7 @@ var findPaper = function(opt, cb) {
     });
     
     function makeupAudioPaper(ap) {
-        sql = "SELECT `wordid` AS word_id, `sort` FROM `gs_audiopaperword` WHERE `paper_id`="+ap._id;
+        var sql = "SELECT `wordid` AS word_id, `sort` FROM `gs_audiopaperword` WHERE `paper_id`="+ap._id;
         db.query(sql, function(err, wordQuestions) {
             if(err) return cb(err);
             ap.wordQuestion = wordQuestions
@@ -82,7 +82,6 @@ exports.find = function(opt, cb, next) {
 
 exports.findByMember = function(id, cb, next) {
     var ep = new EventProxy();
-    var sql = '';
     
     ep.assign('member', 'words_done', function(member, words) {
         return cb({member:member, word:words});

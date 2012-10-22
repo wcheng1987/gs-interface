@@ -47,6 +47,7 @@ function getAudioPaper(sid, theMember) {
                 res.statusCode.should.equal(200);
                 res.should.be.json;
                 res.body.should.have.property('member');
+                done();
 /*                if(undefined != res.body.member.audioPaper) {
                     postListeningRecords(sid, res.body.member.audioPaper);
                 }
@@ -64,7 +65,6 @@ function getAudioPaper(sid, theMember) {
                 if(res.body.member._id === 4) {
                     res.body.member.should.have.property('audioPaper').with.lengthOf(2);
                 }*/
-                done();
             });
         })
     })
