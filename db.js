@@ -15,6 +15,18 @@ function connect() {
     return connection;
 }
 
+// For reconnect automation
+function heartBeat() {
+    setTimeout(function() {
+		connection.query("SELECT 1", function(err) {
+	        if (err) {
+	            console.log('MySQL error ' + err);
+		        connection = connect();
+	        }
+		})
+    }, 3000);
+}
+
 // Error handler for uncaught MySql errors.
 
 function errorHandler(err) {
@@ -29,6 +41,9 @@ function errorHandler(err) {
         setTimeout(function() {
             connection = connect();
         }, 3000);
+    } else if (err.code === 'PROTOCOL_ENQUEUE_AFTER_DESTROY') {
+    	console.log('MySQL socket disconnect. Reconnecting.');
+		connection = connect();
     }
 }
 
