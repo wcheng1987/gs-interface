@@ -6,6 +6,8 @@ var connection = connect();
 process.env.TZ = env.mysql.timezone;
 //connection.utc=true;
 
+heartBeat();
+
 function connect() {
     var connection = mysql.createConnection(env.mysql);
 
