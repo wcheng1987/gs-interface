@@ -11,8 +11,6 @@ function connect() {
 
     connection.connect();
     connection.on('error', errorHandler);
-	connection.keepAlive = true;
-	connection.on('close', onConnectionClose);
 
     return connection;
 }
@@ -21,23 +19,17 @@ function connect() {
 
 function errorHandler(err) {
 
-    console.log('MySQL: ' + err);
+    console.log('MySQL error ' + err);
 
     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-        console.log('MySQL: connection lost. Reconnecting.');
+        console.log('MySQL connection lost. Reconnecting.');
         connection = connect();
     } else if (err.code === 'ECONNREFUSED') {
-        console.log('MySQL: connection refused. Trying soon again.');
+        console.log('MySQL connection refused. Trying soon again.');
         setTimeout(function() {
             connection = connect();
         }, 3000);
     }
-}
-
-function onConnectionClose () {
-	if (true === connection.keepAlive) {
-		connection = connect();
-	}
 }
 
 // For general queries. Delegates to
@@ -52,7 +44,7 @@ function query(sql, params, cb) {
     connection.query(sql, params, function(err, data) {
         console.log(sql + ' ' + (Date.now() - start) + 'ms');
         if (err) {
-            console.log('MySQL: ' + err);
+            console.log('MySQL error ' + err);
         }
         cb(err, data);
     });
@@ -61,7 +53,6 @@ function query(sql, params, cb) {
 // Closes connection.
 
 function close() {
-	connection.keepAlive = false;
     connection.end();
 }
 
