@@ -19,14 +19,14 @@ function connect() {
 
 // For reconnect automation
 function heartBeat() {
-    setTimeout(function() {
+    setInterval(function() {
 		connection.query("SELECT 1", function(err) {
 	        if (err) {
-	            console.log('MySQL error ' + err);
+	            console.log('MySQL lost connection on heartBeat: ' + err);
 		        connection = connect();
 	        }
 		})
-    }, 3000);
+    }, 7200*1000);
 }
 
 // Error handler for uncaught MySql errors.
