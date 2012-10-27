@@ -14,12 +14,13 @@
     , "eventproxy": ">= 0.1.0"
   }
   , "devDependencies": {
-	  "mocha": "*"
+	  	"mocha": "*"
     , "should": "*"
     , "request": ">= 2.9.0"
   }
   , "scripts": {
-    "test": "make test"
+    	"test": "make test"
+		,	"config": "cp env.default.json node_modules/env.json"
   }
   , "main": "./app.js"
   , "engines": { "node": ">= 0.8.12" }
