@@ -19,8 +19,8 @@
     , "request": ">= 2.9.0"
   }
   , "scripts": {
-    	"test": "make test"
-		,	"config": "cp env.default.json node_modules/env.json"
+    		"test": "make test"
+			,	"postinstall": "cp env.default.json node_modules/env.json"
   }
   , "main": "./app.js"
   , "engines": { "node": ">= 0.8.12" }
