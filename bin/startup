@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+var shell = require('shelljs');
+var config = require('env');
+var cmd = '';
+var app = config.name+'-'+config.env;
+var logFile = '`pwd`/log/forever.log'
+cmd = 'forever stop '+app;
+shell.exec(cmd);
+
+cmd = 'cp app.js '+app+' && mkdir -p log && mv '+logFile+' log/oldForever.log';
+shell.exec(cmd);
+cmd = 'NODE_ENV='+config.env+' && forever start -l '+logFile+' sleep(3) && netstat -ntl';
+if(shell.exec(cmd).code !== 0) {
+	console.info('Error: Startup '+config.name+' fatal');
+	process.exit(1);
+}
