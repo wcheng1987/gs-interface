@@ -82,7 +82,11 @@ app.put('/api/write_records', andRestrictAuth, listeningRecord.sync);
 app.post('/api/error_write_records', andRestrictAuth,listeningErrorRedoRecord.add);
 
 app.get('/files/:type?/*', andRestrictAuth, fs.get);
-app.listen(env.port);
+if (process.env.NODE_ENV === 'test') {
+	app.listen(env.port+1);
+} else {
+	app.listen(env.port);
+}
 
 
 console.log("GSTE server listening on port %d in %s mode", 
