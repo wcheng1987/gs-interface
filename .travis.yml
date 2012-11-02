@@ -4,6 +4,6 @@ node_js:
   - 0.8
 before_script:
   - mysql -e 'DROP DATABASE IF EXISTS `goldstone`;CREATE DATABASE `goldstone`;'
-  - mysql `goldstone` < seed.sql
+  - mysql goldstone < seed.sql
 services:
   - redis-server
