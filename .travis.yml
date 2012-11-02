@@ -3,7 +3,7 @@ language: node_js
 node_js:
   - 0.8
 before_script:
-  - mysql -e 'create database goldstone;'
-  - mysql goldstone < seed.sql
+  - mysql -e 'DROP DATABASE IF EXIST `goldstone`;CREATE DATABASE `goldstone`;'
+  - mysql `goldstone` < seed.sql
 services:
   - redis-server
