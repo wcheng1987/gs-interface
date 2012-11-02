@@ -6,7 +6,7 @@
 var EventEmitter = require('events').EventEmitter;
 var http = require('http');
   
-var env =require('../../node_modules/env.json');
+var config =require('config.js').config;
 
 module.exports = request;
 
@@ -20,8 +20,8 @@ function Request(showRes) {
   this.header = {};
   this.basePath = '/api';
   this.addr = {
-      port:env.port,
-      address: env.host
+      port:config.port,
+      address: config.host
   };
   this.showRes = showRes || true; 
 }

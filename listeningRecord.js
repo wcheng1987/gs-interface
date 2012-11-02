@@ -1,6 +1,5 @@
 var db = require('./db.js');
 var EventProxy = require("eventproxy").EventProxy;
-var env = require('env.json');
 var audioPaper = require('./audioPaper.js');
 var listeningErrorRedoRecord = require('./listeningErrorRedoRecord.js');
 

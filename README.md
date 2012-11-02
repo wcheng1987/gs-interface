@@ -14,7 +14,6 @@ gs-interface 是基于 [**Node.js**](http://nodejs.org) 和 **MySQL** 开发。
 git clone git://github.com/guanbo/gs-interface.git  
 cd gs-interface
 npm install ./
-cp env.default.json node_modules/env.json
 // modify the env file as yours
 mysql -uroot -p123456 goldstone < seed.sql
 node app.js

@@ -1,10 +1,10 @@
 var url = require('url');
-var env = require('env.json');
+var config = require('config.js').config;
 
 exports.get = function(req, res, next) {
     var type = req.params.type;
     var path = url.parse(req.url).pathname;
-    var file = env.files[type];
+    var file = config.files[type];
     var ranges = req.get('Range', 'bytes').split('-', 2);
     var start = ranges[0] ? parseInt(ranges[0]):0;
     var end = ranges[1] ? parseInt(ranges[1]) : 0;

@@ -1,5 +1,5 @@
 var db = require('./db.js');
-var env = require('env.json');
+var config = require('config.js').config;
 
 exports.list = function(req, res) {
     console.log("==news list from "+req.query.start+" To "+req.query.end);
@@ -26,10 +26,10 @@ exports.list = function(req, res) {
         if(db.errorHandle(err, rs, function(result){res.send(result.status);})) {
             rs.forEach(function(news) {
                 if(news.imageurl) {
-                    news.imageurl = env.imageBaseURL+news.imageurl;
+                    news.imageurl = config.imageBaseURL+news.imageurl;
                 }
                 if(news.userimage) {
-                    news.userimage = env.imageBaseURL+news.userimage;
+                    news.userimage = config.imageBaseURL+news.userimage;
                 }
             });
             json.news = rs;

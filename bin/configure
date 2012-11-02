@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var config = require(__dirname + '/../env.default.json');
+var env = {
+	
+};
+
+for(key in env) {
+	var value = env[key];
+	if(value === undefined || value === null) continue;
+	if(typeof config[key] === 'object') {
+		config[key]
+	}
+}
+config.host = process.env.SERVER_HOST||config.host;
+
+config.mysql.host = process.env.DB_HOST || config.mysql.host;
+config.mysql.port = process.env.DB_PORT || config.mysql.port;
+config.mysql.user = process.env.DB_USER || config.mysql.user;
+config.mysql.password = process.env.DB_PASSWORD || config.mysql.password;
+config.mysql.database = process.env.DB_NAME || config.mysql.database;
+
+config.redis.port = process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT): config.redis.port;
+config.redis.host = process.env.REDIS_HOST||config.redis.host;
+
+fs.writeFile(__dirname + '/../node_modules/config.json', JSON.stringify(config, null, 2), function(err) {
+	if(err) throw err;
+	process.exit(1);
+});

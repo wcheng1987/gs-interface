@@ -1,15 +1,15 @@
 var mysql = require('mysql');
-var env = require('env.json');
+var config = require('config.js').config;
 
 var connection = connect();
 
-process.env.TZ = env.mysql.timezone;
+// process.env.TZ = env.mysql.timezone;
 //connection.utc=true;
 
 heartBeat();
 
 function connect() {
-    var connection = mysql.createConnection(env.mysql);
+    var connection = mysql.createConnection(config.mysql);
 
     connection.connect();
     connection.on('error', errorHandler);

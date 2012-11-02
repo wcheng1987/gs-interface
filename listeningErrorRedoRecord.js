@@ -1,6 +1,5 @@
 var db = require('./db.js');
 var EventProxy = require("eventproxy").EventProxy;
-var env = require('env.json');
 
 exports.insertOne = insertOne = function(errorWriteRecord, cb) {
     var opt = {

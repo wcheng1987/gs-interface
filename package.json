@@ -20,7 +20,7 @@
   }
   , "scripts": {
     		"test": "make test"
-			,	"postinstall": "cp env.default.json node_modules/env.json"
+			,	"postinstall": "cp config.default.js node_modules/config.js"
   }
   , "main": "./app.js"
   , "engines": { "node": ">= 0.8.12" }

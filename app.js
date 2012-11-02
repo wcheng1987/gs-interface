@@ -12,7 +12,9 @@ var location = require('./location.js');
 var listeningRecord = require('./listeningRecord.js');
 var listeningErrorRedoRecord = require('./listeningErrorRedoRecord.js');
 var fs = require('./fileServer.js');
-var env = require('env.json');
+var config = require('config.js').config;
+
+// console.log(config);
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -21,9 +23,9 @@ app.configure(function(){
   app.use(express.cookieParser())
   // app.use(express.session({ secret: 'keyboard cat'}))
   app.use(express.session({
-	  store: new RedisStore({host:env.redis.host}),
-	  secret: env.session_secret,
-	  cookie: env.session_cookie
+	  store: new RedisStore(config.redis),
+	  secret: config.session_secret,
+	  cookie: config.session_cookie
   }));
   app.use(express.methodOverride());
   app.use(app.router);
@@ -82,7 +84,7 @@ app.put('/api/write_records', andRestrictAuth, listeningRecord.sync);
 app.post('/api/error_write_records', andRestrictAuth,listeningErrorRedoRecord.add);
 
 app.get('/files/:type?/*', andRestrictAuth, fs.get);
-app.listen(env.port);
+app.listen(config.port);
 
 
 console.log("GSTE server listening on port %d in %s mode", 
