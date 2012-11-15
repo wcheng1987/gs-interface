@@ -1,11 +1,8 @@
 var mysql = require('mysql');
 var config = require('config.js').config;
-var log4js = require('log4js');
-var logger = log4js.getLogger('MySQL');
+var logger = require('log4js').getLogger('MySQL');
 
 var connection = connect();
-
-log4js.replaceConsole();
 
 // process.env.TZ = env.mysql.timezone;
 
@@ -113,37 +110,36 @@ exports.findOne = findOne;
 exports.scalar = scalar;
 
 exports.find = function(opt, cb) {
-    var sql = "SELECT ";
-    if(opt.field) {
-        sql += opt.field.join();
-    } else {
-        sql += '*';
-    }
-    sql += ' FROM '+opt.schema+' WHERE 1';
-    logger.debug(opt);
-    for(var key in opt.query) {
-        var value = opt.query[key];
-        if(typeof value == 'string') {
-            sql += ' AND '+key+' = "'+value+'"';
-        } else if(typeof value == 'number') {
-            sql += ' AND '+key+' = '+value;
-        } else if(typeof value == 'object') {
-            for(var op in value) {
-                if(op === '$in') {
-                    sql += ' AND '+key+' IN ('+value[op]+')';
-                } else {
-                    sql += ' AND '+key+' '+op+' '+value[op];
-                }
-            }
+  var sql = "SELECT ";
+  if(opt.field) {
+    sql += opt.field.join();
+  } else {
+    sql += '*';
+  }
+  sql += ' FROM '+opt.schema+' WHERE 1';
+  for(var key in opt.query) {
+    var value = opt.query[key];
+    if(typeof value == 'string') {
+      sql += ' AND '+key+' = "'+value+'"';
+    } else if(typeof value == 'number') {
+      sql += ' AND '+key+' = '+value;
+    } else if(typeof value == 'object') {
+      for(var op in value) {
+        if(op === '$in') {
+          sql += ' AND '+key+' IN ('+value[op]+')';
+        } else {
+          sql += ' AND '+key+' '+op+' '+value[op];
         }
+      }
     }
-    if(opt.order) {
-        sql += ' ORDER BY'
-        for(var f in opt.order) {
-            sql += ' '+f+' '+opt.order[f];
-        }
+  }
+  if(opt.order) {
+    sql += ' ORDER BY'
+    for(var f in opt.order) {
+      sql += ' '+f+' '+opt.order[f];
     }
-    query(sql, cb);
+  }
+  query(sql, cb);
 }
 
 //TODO: refactory following code
