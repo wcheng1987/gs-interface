@@ -1,76 +1,77 @@
 var mysql = require('mysql');
 var config = require('config.js').config;
+var log4js = require('log4js');
+var logger = log4js.getLogger('MySQL');
 
 var connection = connect();
 
+log4js.replaceConsole();
+
 // process.env.TZ = env.mysql.timezone;
-//connection.utc=true;
 
 heartBeat();
 
 function connect() {
-    var connection = mysql.createConnection(config.mysql);
+  var connection = mysql.createConnection(config.mysql);
 
-    connection.connect();
-    connection.on('error', errorHandler);
+  connection.connect();
+  connection.on('error', errorHandler);
 
-    return connection;
+  return connection;
 }
 
 // For reconnect automation
 function heartBeat() {
-    setInterval(function() {
+  setInterval(function() {
 		connection.query("SELECT 1", function(err) {
-	        if (err) {
-	            console.log('MySQL lost connection on heartBeat: ' + err);
-		        connection = connect();
-	        }
+      if (err) {
+				logger.warn(err);
+				logger.info('lost connection on heartBeat. Reconnecting');
+        connection = connect();
+      }
 		})
-    }, 7200*1000);
+  }, 7000*1000);
 }
 
 // Error handler for uncaught MySql errors.
 
 function errorHandler(err) {
+  logger.error(err);
 
-    console.log('MySQL error ' + err);
-
-    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-        console.log('MySQL connection lost. Reconnecting.');
+  if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+    logger.info('connection lost. Reconnecting.');
+    connection = connect();
+  } else if (err.code === 'ECONNREFUSED') {
+    logger.info('connection refused. Trying soon again.');
+    setTimeout(function() {
         connection = connect();
-    } else if (err.code === 'ECONNREFUSED') {
-        console.log('MySQL connection refused. Trying soon again.');
-        setTimeout(function() {
-            connection = connect();
-        }, 3000);
-    } else if (err.code === 'PROTOCOL_ENQUEUE_AFTER_DESTROY') {
-    	console.log('MySQL socket disconnect. Reconnecting.');
+    }, 3000);
+  } else if (err.code === 'PROTOCOL_ENQUEUE_AFTER_DESTROY') {
+  	log.info('socket disconnect. Reconnecting.');
 		connection = connect();
-    }
+  }
 }
 
 // For general queries. Delegates to
 // client.query.
 
 function query(sql, params, cb) {
-    var start = Date.now();
+  var start = Date.now();
 	if (typeof params === 'function') {
 		cb = params;
-	    params = undefined;
+		params = undefined;
 	} 
-    connection.query(sql, params, function(err, data) {
-        console.log(sql + ' ' + (Date.now() - start) + 'ms');
-        if (err) {
-            console.log('MySQL error ' + err);
-        }
-        cb(err, data);
-    });
+  connection.query(sql, params, function(err, data) {
+    logger.debug(sql + ' ' + (Date.now() - start) + 'ms');
+    if (err) errorHandler(err);
+    cb(err, data);
+  });
 }
 
 // Closes connection.
 
 function close() {
-    connection.end();
+	connection.end();
 }
 
 // Queries single row.
@@ -78,32 +79,32 @@ function close() {
 function findOne(sql, params, cb) {
 	if (typeof params === 'function') {
 		cb = params;
-	    params = undefined;
+		params = undefined;
 	} 
-    query(sql, params, function(err, results) {
-        if (err) {
-            cb(err);
-        } else if (results.length === 0) {
-            cb(null);
-        } else {
-            cb(null, results[0]);
-        }
-    });
+  query(sql, params, function(err, results) {
+    if (err) {
+      cb(err);
+    } else if (results.length === 0) {
+      cb(null);
+    } else {
+      cb(null, results[0]);
+    }
+  });
 }
 
 // Helper method to execute aggregate queries
 // such as SELECT COUNT(*).
 
 function scalar(sql, params, cb) {
-    single(sql, params, function(err, row) {
-        if (err) {
-            cb(err);
-        } else if (row) {
-            cb(null, row[Object.keys(row)[0]]);
-        } else {
-            cb(null);
-        }
-    });
+  single(sql, params, function(err, row) {
+    if (err) {
+			cb(err);
+    } else if (row) {
+			cb(null, row[Object.keys(row)[0]]);
+    } else {
+			cb(null);
+    }
+  });
 }
 
 exports.query = query;
@@ -119,7 +120,7 @@ exports.find = function(opt, cb) {
         sql += '*';
     }
     sql += ' FROM '+opt.schema+' WHERE 1';
-    console.log(opt);
+    logger.debug(opt);
     for(var key in opt.query) {
         var value = opt.query[key];
         if(typeof value == 'string') {

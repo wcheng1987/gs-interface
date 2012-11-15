@@ -2,6 +2,10 @@ var express = require('express');
 var RedisStore = require('connect-redis')(express);
 var app = module.exports = express.createServer();
 
+var log4js = require('log4js');
+var logger = log4js.getLogger('APP');
+
+
 var news = require('./news.js');
 var examclass = require('./examclass.js');
 var exampaper = require('./exampaper.js');
@@ -14,7 +18,8 @@ var listeningErrorRedoRecord = require('./listeningErrorRedoRecord.js');
 var fs = require('./fileServer.js');
 var config = require('config.js').config;
 
-// console.log(config);
+log4js.replaceConsole();
+
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -84,9 +89,9 @@ app.put('/api/write_records', andRestrictAuth, listeningRecord.sync);
 app.post('/api/error_write_records', andRestrictAuth,listeningErrorRedoRecord.add);
 
 app.get('/files/:type?/*', andRestrictAuth, fs.get);
+
+
 app.listen(config.port);
 
-
-console.log("GSTE server listening on port %d in %s mode", 
-                app.address().port, app.settings.env);
+logger.info("GSTE server listening on port %d in %s mode", app.address().port, app.settings.env);
 

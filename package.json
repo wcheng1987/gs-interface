@@ -12,6 +12,7 @@
     , "validator": "0.3.7"
     , "jsdom": ">= 0.2.14"
     , "eventproxy": ">= 0.1.0"
+		, "log4js": ">= 0.5.5"
   }
   , "devDependencies": {
 	  	"mocha": "*"
