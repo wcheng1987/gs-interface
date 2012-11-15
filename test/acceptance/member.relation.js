@@ -1,4 +1,4 @@
-if (process.env.NODE_ENV === 'test') {
+if (process.env.SERVER_HOST === '127.0.0.1') {
 	var app = require('../..');
 }
 var member = require('./member.lib.js');
