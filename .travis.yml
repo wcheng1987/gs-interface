@@ -8,4 +8,4 @@ before_script:
 services:
   - redis-server
 env:
-	- SERVER_HOST='127.0.0.1'
+  - SERVER_HOST='127.0.0.1'
