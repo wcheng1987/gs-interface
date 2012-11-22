@@ -3,9 +3,10 @@ language: node_js
 node_js:
   - 0.8
 before_script:
-  - mysql -e 'DROP DATABASE IF EXISTS `goldstone`;CREATE DATABASE `goldstone`;'
+  - mysql -e 'CREATE DATABASE $DB_NAME;'
+  - tar -zxvf seed.sql.tgz
   - mysql goldstone < seed.sql
 services:
   - redis-server
 env:
-  - SERVER_HOST='127.0.0.1'
+  - SERVER_HOST='127.0.0.1' DB_NAME="goldstone"

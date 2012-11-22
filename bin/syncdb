@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo "============================"
+echo "start sync database ...\n"
+SEED=seed.sql
+tar -zxvf ../$SEED.tgz
+mysql -h$DB_HOST -u$DB_USER -p$DB_PASSWORD $DB_NAME < $SEED
+rm -f $SEED
+
+echo "sync database done!"
+echo "============================"
