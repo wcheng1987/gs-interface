@@ -3,7 +3,7 @@ language: node_js
 node_js:
   - 0.8
 before_script:
-  - mysql -e "CREATE DATABASE `$DB_NAME`;"
+  - mysql -e "CREATE DATABASE $DB_NAME;"
   - tar -zxvf seed.sql.tgz
   - mysql $DB_NAME < seed.sql
 services:
