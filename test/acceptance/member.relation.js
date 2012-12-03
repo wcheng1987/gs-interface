@@ -50,7 +50,7 @@ function getAudioPaper(sid, theMember) {
                 done();
 /*                if(undefined != res.body.member.audioPaper) {
                     postListeningRecords(sid, res.body.member.audioPaper);
-                }*/
+                }
                 if(undefined != res.body.word) {
                     getAudioFiles(sid, res.body.word);
                 }
