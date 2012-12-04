@@ -88,7 +88,6 @@ function getAudioFiles(sid, words) {
 				if (fs.existsSync(pathname)) return done();
                 var ws = fs.createWriteStream(pathname);
                 r(encodeURI(word.audio), function(err, res, body) {
-//                    console.log(err);
                     res.statusCode.should.equal(200);
                     res.should.have.header('content-length');
                     var ct = parseInt(res.headers['content-length']);
