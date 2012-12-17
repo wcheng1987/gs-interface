@@ -8,7 +8,7 @@ var logger = log4js.getLogger('APP');
 var config = require('config.js').config;
 var routes = require('./routes.js');
 
-log4js.replaceConsole();
+// log4js.replaceConsole();
 
 
 app.configure(function(){

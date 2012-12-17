@@ -1,45 +1,47 @@
-if (process.env.SERVER_HOST === '127.0.0.1') {
-	var app = require('../..');
-}
-var member = require('./member.lib.js');
-var request = require('request');
-var fs = require('fs');
-var path = require('path');
-var url = require('url');
+var Member = require('../support/member');
+// var fs = require('../support/session.fs');
+// var audioPaper = require('./audioPaper');
 
-describe('#Member Relationship Test', function() {
-    it('Should Login as member', function(done) {
-        member.afterLogin(function(sid, theMember) {
-            done();
-            var times = 1;
-            // if(theMember._id === 4) times = 1;
-            for(var i =0; i < times;i++) getFriends(sid, theMember);
-        });
-    })
+
+var member = new Member();
+
+describe('Member Acceptance Test', function() {
+	before(function(done){
+	  member.auth(done)
+	})
+	it('should success auth', function() {
+		getFriends();
+	})	
 })
 
-function getFriends(sid, theMember) {
-    describe('#Member Friend', function() {
-        it('Should GET friends info of '+theMember.username, function(done) {
-            member.get('/members/'+theMember._id+'/friends', sid)
-            .end(function(res) {
-                res.statusCode.should.equal(200);
-                res.should.be.json;
-                res.body.should.have.property('member');
-                done();
-                res.body.member.friendgroup.forEach(function(group) {
-                    if(group.friend) {
-                        group.friend.forEach(function(friend) {
-                            getAudioPaper(sid, friend);
-                        });
-                    }
-                });
-            });
-        })
-    })
+function getFriends() {
+	describe('#Friends of '+member.member.username, function() {
+		before(function(done){
+			member.getFriends(done)
+		})
+	  it('should success get friends info', function() {
+			eachGroup()
+	  })
+	})
 }
 
-function getAudioPaper(sid, theMember) {
+function eachGroup() {
+	member.member.friendgroup.forEach(function(group) {
+    var friends = group.friend || []
+		friends.forEach(getAudioPaper)
+	})
+}
+
+function getAudioPaper(user) {
+	// console.log('222', user)
+	describe('##Audio Paper of Friends of '+user.username, function(){
+	  it('should success get audio paper of '+user.realname, function(done) {
+			member.getAudioPaper(user, done)
+	  })
+	})
+}
+
+function getAudioPaper1(sid, theMember) {
     describe('#Member, Audio paper', function() {
         it('Should GET audio paper of '+theMember.username+' friend', function(done) {
             member.get('/members/'+theMember._id+'/audio_paper', sid)
@@ -71,7 +73,7 @@ function getAudioPaper(sid, theMember) {
         })
     })
 }
-
+/*
 function getAudioFiles(sid, words) {
     var cookie = request.cookie(sid);
     var j = request.jar();
@@ -100,7 +102,7 @@ function getAudioFiles(sid, words) {
             });
         });
     });
-}
+}*/
 
 function generateRecord(audioPaper) {
     var site = audioPaper.englishSite;
