@@ -2,10 +2,11 @@ var express = require('express');
 var RedisStore = require('connect-redis')(express);
 var app = module.exports = express.createServer();
 
+var config = require('config.js').config;
 var log4js = require('log4js');
 var logger = log4js.getLogger('APP');
+log4js.setGlobalLogLevel(config.log.level[process.env.NODE_ENV]);
 
-var config = require('config.js').config;
 var routes = require('./routes.js');
 
 // log4js.replaceConsole();

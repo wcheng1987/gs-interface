@@ -25,12 +25,19 @@ exports.config = {
 		port: process.env.REDIS_PORT||6379,
 		host: process.env.REDIS_HOST||"127.0.0.1"
   },
+	log:{
+		level:{
+			development:'TRACE',
+			test:'TRACE',
+			production:'ERROR'
+		}
+	},
 	
   imageBaseURL: "http://127.0.0.1:8080/gs_ctrl_web",
   files: {
 		audio:{
 			base:"/files/audio/",
-			root:"/home/deploy/gstest/tomcat/webapps/gs_web/audio/word/"
+			root:"/home/deploy/runtime/fileServer/audio/word/"
 		}
 	}
 };
