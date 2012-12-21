@@ -20,12 +20,16 @@ exports.get = function(sid, objectURL, done) {
 
   r(encodeURI(objectURL), function(err, res, body) {
 		should.not.exist(err);
-    res.statusCode.should.equal(200);
+		if(res.statusCode !== 200) {
+			console.log('==download ', res.statusCode)
+			return done()
+		}
+    res.statusCode.should.eql(200);
     res.should.have.header('content-length');
     var ct = parseInt(res.headers['content-length']);
     fs.stat(pathname, function(ferr, stats) {
-        stats.size.should.equal(ct);
-        done();
+      stats.size.should.equal(ct);
+      if(done) done()
     });
   })
   .pipe(ws);

@@ -2,7 +2,7 @@
 *.svn/
 log/
 node_modules/
-test/words/
+test/support/tmp
 test/acceptance/words/
 gs-interface-*.js
 .nide

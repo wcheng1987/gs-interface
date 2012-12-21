@@ -1,7 +1,5 @@
 var Member = require('../support/member');
-// var fs = require('../support/session.fs');
-// var audioPaper = require('./audioPaper');
-
+var file = require('../support/http.file');
 
 var member = new Member();
 
@@ -20,89 +18,43 @@ function getFriends() {
 			member.getFriends(done)
 		})
 	  it('should success get friends info', function() {
-			eachGroup()
+			member.member.friendgroup.forEach(function(group) {
+				var friends = group.friend ||[]
+				friends.forEach(getAudioPaper)
+			})
 	  })
-	})
-}
-
-function eachGroup() {
-	member.member.friendgroup.forEach(function(group) {
-    var friends = group.friend || []
-		friends.forEach(getAudioPaper)
 	})
 }
 
 function getAudioPaper(user) {
-	// console.log('222', user)
 	describe('##Audio Paper of Friends of '+user.username, function(){
-	  it('should success get audio paper of '+user.realname, function(done) {
+		before(function(done){
 			member.getAudioPaper(user, done)
+		})
+	  it('should success get audio paper of '+user.realname, function() {
+			// console.log('222', user)
+			user.words.forEach(getAudioFile)
+			user.audioPaper.forEach(postRecord)
+	  })
+		it('should success post listen record', function(){
+		  
+		})
+	})
+}
+
+function getAudioFile(word) {
+	describe('###Audio file : '+word.word, function(){
+	  it('should success download '+word.audio, function(done){
+			file.get(member.session.sid, word.audio, done)
 	  })
 	})
 }
 
-function getAudioPaper1(sid, theMember) {
-    describe('#Member, Audio paper', function() {
-        it('Should GET audio paper of '+theMember.username+' friend', function(done) {
-            member.get('/members/'+theMember._id+'/audio_paper', sid)
-            .end(function(res) {
-							res.statusCode.should.be.below(300);
-							if(res.statusCode === 200) {
-								res.should.be.json;
-								res.body.should.have.property('member');
-							}
-							done();
-/*                if(undefined != res.body.member.audioPaper) {
-                    postListeningRecords(sid, res.body.member.audioPaper);
-                }
-                if(undefined != res.body.word) {
-                    getAudioFiles(sid, res.body.word);
-                }
-                // res.body.member.should.have.property('audioPaper');
-                // console.log("audioPapers:");
-                // res.body.member.audioPaper.forEach(function(ap) {
-                //     if(ap._id === 175) ap.name.should.be.equal('bbb');
-                //     if(ap._id === 190) ap.name.should.be.equal('12333');
-                //     console.log(ap._id, ap.name, ap.englishSite._id);
-                // });
-/*                res.body.member.should.have.property('_id');
-                if(res.body.member._id === 4) {
-                    res.body.member.should.have.property('audioPaper').with.lengthOf(2);
-                }*/
-            });
-        })
-    })
+function postRecord(audioPaper) {
+	describe('###Record of '+audioPaper.name+' ID:'+audioPaper._id, function(){
+	  
+	})
 }
-/*
-function getAudioFiles(sid, words) {
-    var cookie = request.cookie(sid);
-    var j = request.jar();
-    j.add(cookie);
-    var r = request.defaults({jar:j});
-    describe('#Member, Audio Files of paper', function() {
-        words.forEach(function(word) {
-            it('Should GET audio file:'+word.word, function(done) {
-                var pathname = url.parse(word.audio).pathname;
-                var basename = path.basename(pathname);
-				pathname = __dirname+'/words/';
-				if (!fs.existsSync(pathname)) fs.mkdirSync(pathname);
-				pathname += basename;
-				if (fs.existsSync(pathname)) return done();
-                var ws = fs.createWriteStream(pathname);
-                r(encodeURI(word.audio), function(err, res, body) {
-                    res.statusCode.should.equal(200);
-                    res.should.have.header('content-length');
-                    var ct = parseInt(res.headers['content-length']);
-                    fs.stat(pathname, function(ferr, stats) {
-                        stats.size.should.equal(ct);
-                        done();
-                    });
-                })
-                .pipe(ws);
-            });
-        });
-    });
-}*/
 
 function generateRecord(audioPaper) {
     var site = audioPaper.englishSite;
@@ -188,5 +140,3 @@ function postListeningRecords(sid, audioPaper) {
         });    
     });
 }
-
-exports.generateRecord = generateRecord;

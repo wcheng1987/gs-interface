@@ -23,13 +23,13 @@ Session.prototype.getNow=function(offset){
   now.getHours()+':'+now.getMinutes()+':'+now.getSeconds());
 }
 
-Session.prototype.getSID = function(res) {
+var getSID = function(res) {
 	return res.headers['set-cookie'][0].split(';')[0];
 }
 
 var sessionDone = function(res, self) {
   res.headers.should.have.property('set-cookie');
-	self.sid = Session.prototype.getSID(res);
+	self.sid = getSID(res);
 }
 
 Session.prototype.post = function(url, data, done) {
