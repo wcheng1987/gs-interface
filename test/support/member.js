@@ -1,7 +1,7 @@
 var Session = require('./session');
 // var fs = require('../support/session.fs');
 // var audioPaper = require('./audioPaper');
-var users = require('../json/users');
+var users = require('../fixtures/users');
 
 module.exports = Member
 

@@ -15,9 +15,11 @@ var listeningErrorRedoRecord = require('./lib/listeningErrorRedoRecord.js');
 var fs = require('./lib/fileServer.js');
 
 function andRestrictAuth(req, res, next) {
-    if(req.session.member) next();
-    else res.send(401);
-        //next(new Error('Unauthorized'));
+  if(req.session.member) next();
+  else {
+		res.send(401);
+	}
+      //next(new Error('Unauthorized'));
 }
 
 function andRestrictToSelf(req, res, next) {
