@@ -28,7 +28,7 @@ exports.config = {
 	log:{
 		level:{
 			development:'TRACE',
-			test:'TRACE',
+			test:'ERROR',
 			production:'ERROR'
 		}
 	},

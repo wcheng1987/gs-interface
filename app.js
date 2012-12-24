@@ -9,7 +9,7 @@ log4js.setGlobalLogLevel(config.log.level[process.env.NODE_ENV]);
 
 var routes = require('./routes.js');
 
-// log4js.replaceConsole();
+log4js.replaceConsole();
 
 
 app.configure(function(){
