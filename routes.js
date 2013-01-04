@@ -13,6 +13,7 @@ var location = require('./lib/location.js');
 var listeningRecord = require('./lib/listeningRecord.js');
 var listeningErrorRedoRecord = require('./lib/listeningErrorRedoRecord.js');
 var fs = require('./lib/fileServer.js');
+var audioPaper = require('./lib/audioPaper');
 
 function andRestrictAuth(req, res, next) {
   if(req.session.member) next();
@@ -61,4 +62,6 @@ exports = module.exports = function(app) {
 	app.post('/api/error_write_records', andRestrictAuth,listeningErrorRedoRecord.add);
 	
 	app.get('/files/:type?/*', andRestrictAuth, fs.get);
+	
+	app.get('/api/audio_paper/public_timeline', audioPaper.publicTimeLine);
 };

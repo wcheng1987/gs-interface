@@ -1,7 +1,3 @@
-if (process.env.SERVER_HOST === '127.0.0.1') {
-	var app = require('../..');
-}
-
 var request = require('./http');
 var crypto = require('crypto');
 

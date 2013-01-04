@@ -13,6 +13,7 @@
     , "jsdom": ">= 0.2.14"
     , "eventproxy": ">= 0.1.0"
 		, "log4js": ">= 0.5.5"
+    , "moment" : "1.7.x"
   }
   , "devDependencies": {
 	  	"mocha": "*"
@@ -20,8 +21,8 @@
     , "request": ">= 2.9.0"
   }
   , "scripts": {
-    		"test": "make test"
-			,	"postinstall": "cp config.default.js node_modules/config.js"
+			"test": "make test"
+		,	"postinstall": "cp config.default.js node_modules/config.js"
   }
   , "main": "./app.js"
   , "engines": { "node": ">= 0.8.12" }

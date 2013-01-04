@@ -1,9 +1,9 @@
-MOCHA_OPTS=
+MOCHA_OPTS= -r should
 REPORTER = dot
 
 check: test
 
-test: test-acceptance
+test: test-unit test-acceptance
 
 test-unit:
 	@NODE_ENV=test ./node_modules/.bin/mocha \
