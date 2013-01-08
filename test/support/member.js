@@ -1,16 +1,11 @@
 var Session = require('./session');
-// var fs = require('../support/session.fs');
-// var audioPaper = require('./audioPaper');
 var users = require('../fixtures/users');
-
-module.exports = Member
 
 function Member() {
 	this.member = {}
-	this.session = new Session()
 }
 
-// Friend.prototype.__proto__ = Session.prototype;
+Member.prototype = new Session()
 Member.prototype.auth = function(user, done) {
 	if(typeof user === 'function') {
 		done = user
@@ -18,7 +13,7 @@ Member.prototype.auth = function(user, done) {
 	}
 	
 	var self = this;
-  this.session.post('/login', user, function(res) {
+  self.post('/login', user, function(res) {
     res.statusCode.should.equal(200);
     res.should.be.json;
     res.body.should.have.property('member');
@@ -31,7 +26,7 @@ Member.prototype.getFriends = function(done) {
 	var self = this;
 	var member = this.member;
 	if(undefined == this.member._id) throw new Error('Session had not been auth!!')
-  this.session.get('/members/'+member._id+'/friends', function(res) {
+  this.get('/members/'+member._id+'/friends', function(res) {
     res.statusCode.should.equal(200);
     res.should.be.json;
     res.body.should.have.property('member');
@@ -43,7 +38,7 @@ Member.prototype.getFriends = function(done) {
 
 Member.prototype.getAudioPaper = function(user, done) {
 	if(undefined == this.member._id) throw new Error('Session had not been auth!!')
-  this.session.get('/members/'+user._id+'/audio_paper', function(res) {
+  this.get('/members/'+user._id+'/audio_paper', function(res) {
 		res.statusCode.should.be.below(300);
 		user.audioPaper = []
 		user.words = []
@@ -59,3 +54,5 @@ Member.prototype.getAudioPaper = function(user, done) {
   })
 	return this;
 }
+
+exports = module.exports = Member

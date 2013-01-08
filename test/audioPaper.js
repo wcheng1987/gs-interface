@@ -1,7 +1,24 @@
-var ap = require('../lib/audioPaper')
-var util = require('../lib/util');
+var should = require('should')
+var AudioPaper = require('../model/audioPaper')
+var util = require('../lib/util')
+var json = require('./fixtures/audioPaper')
+
+var ap = new AudioPaper()
+var validRecord = function(record) {
+	record.should.be.a('object')
+	for(var key in json.audioPaper[0]) {
+		record.should.have.property(key)
+	}
+}
 
 describe('AudioPaper find', function(){
+	it('should success find one', function(done){
+		ap.findOne({}, function(err, record) {
+			should.not.exist(err)
+			validRecord(record)
+			done()
+		})
+	})
 	it('should success find 10', function(done){
 		var opt = {
 			query: {
@@ -12,40 +29,13 @@ describe('AudioPaper find', function(){
 				end:10
 			}	
 		}
-    ap.find(opt, function(data) {
+    ap.find(opt, function(err, data) {
+			should.not.exist(err)
 			// console.log(data.member.audioPaper)
-			/*For date json and string same value but different format*/
-			data.should.have.property('member')
+			data.should.be.an.instanceOf(Array)
+			data.length.should.above(0)
+			data.forEach(validRecord)
 			done()
     }, done)
-	})
-})
-
-describe('AudioPaper publicTimeLine', function(){
-	var req = {headers:{},query:{}}
-	,	res = {
-		send:function(code) {
-			should.not.exist(code)
-		}
-	}
-  it('should success get last 10 without update time', function(done) {
-		res.json = function(json) {
-			// console.log(json)
-			json.should.have.property('audioPaper')
-			json.audioPaper.length.should.be.above(0)
-			done()
-		}
-    ap.publicTimeLine(req, res, done)
-  })
-	it('should not get data', function(done){
-		req.headers = {
-			'if-modified-since':util.getNow()
-		}
-		res.send = function(code) {
-			// console.log(code)
-			code.should.equal(304)
-			done()
-		}
-	  ap.publicTimeLine(req, res, done)
 	})
 })

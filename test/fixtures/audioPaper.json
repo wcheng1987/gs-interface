@@ -1,0 +1,31 @@
+{
+  "audioPaper": [
+    {
+      "_id": 123,
+      "description": "desc",
+      "name": "初三听力",
+      "book_id": 365,
+      "creator_id": 233,
+      "count": 99,
+      "createTime": "2012-03-13 15:18:02",
+      "wordCount": 12,
+      "phraseCount": 23,
+      "random": 1,
+      "randomWordCount": 12,
+      "randomPhraseCount": 18,
+      "englishSite": {
+        "_id": 123,
+        "beginTime": "2012-01-12 11:06:31",
+        "endTime": "2012-01-12 11:06:31",
+        "replayCount": 2,
+        "interval": 4
+      },
+      "wordQuestion": [
+        {
+          "sort": 12,
+          "word_id": 212
+        }
+      ]
+    }
+  ]
+}
