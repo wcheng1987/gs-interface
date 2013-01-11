@@ -6,7 +6,7 @@
 var news = require('./lib/news.js');
 var examclass = require('./lib/examclass.js');
 var exampaper = require('./lib/exampaper.js');
-var examitem = require('./lib/examitem.js');
+// var examitem = require('./lib/examitem.js');
 var examRecord = require('./lib/examRecord.js');
 var member = require('./lib/member.js');
 var location = require('./lib/location.js');
@@ -47,14 +47,14 @@ exports = module.exports = function(app) {
 	app.post("/api/exam_records/", andRestrictAuth, examRecord.add);
 	app.put("/api/exam_records/", andRestrictAuth, examRecord.sync);
 
-	app.get("/api/exampapers/:id",function (request, response) {
-	                      examitem.packData(request,function(result){
-	                            if(result.body)
-	                                 response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
-	                            else
-	                                 response.send(result.status);
-	                      });
-	});
+	// app.get("/api/exampapers/:id",function (request, response) {
+	//                       examitem.packData(request,function(result){
+	//                             if(result.body)
+	//                                  response.send(result.body,{ 'Content-Type': 'application/json' },result.status);
+	//                             else
+	//                                  response.send(result.status);
+	//                       });
+	// });
 	app.get("/api/industries/", examclass.getIndustry);
 	app.get('/api/locations/', location.index);
 

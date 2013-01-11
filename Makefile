@@ -1,4 +1,4 @@
-MOCHA_OPTS= -r should
+MOCHA_OPTS=
 REPORTER = dot
 
 check: test
