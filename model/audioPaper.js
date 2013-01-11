@@ -18,9 +18,8 @@ AudioPaper.prototype.find = function(opt, next) {
 	this.options.order = {_id:'ASC'}
 	SimpleDO.prototype.find.apply(this, arguments)
 }
-AudioPaper.prototype.makeup = function(wordQuestions, sites) {
-	var self = this
-	self.recordset.forEach(function(audioPaper) {
+AudioPaper.prototype.makeup = function(wordQuestions, sites, next) {
+	this.recordset.forEach(function(audioPaper) {
 		var index = null
 		audioPaper.wordQuestion = wordQuestions.filter(function(wq, idx){
 			var found = (wq.paper_id === audioPaper._id)
@@ -44,6 +43,7 @@ AudioPaper.prototype.makeup = function(wordQuestions, sites) {
 		})
 		sites.splice(index, 1)
 	})
+	next(null, this.recordset)
 }
 
 exports = module.exports = AudioPaper

@@ -12,9 +12,11 @@ var member = require('./lib/member.js');
 var location = require('./lib/location.js');
 var listeningRecord = require('./lib/listeningRecord.js');
 var listeningErrorRedoRecord = require('./lib/listeningErrorRedoRecord.js');
+
 var fs = require('./lib/fileServer.js');
 var audioPaper = require('./controller/audioPaper')
 var word = require('./controller/word')
+var bookCatalog = require('./controller/bookCatalog')
 
 function andRestrictAuth(req, res, next) {
   if(req.session.member) next();
@@ -66,4 +68,5 @@ exports = module.exports = function(app) {
 	
 	app.get('/api/audio_paper/public_timeline', audioPaper.publicTimeLine)
 	app.get('/api/words', andRestrictAuth, word.get)
+	app.get('/api/book_catalogs', bookCatalog.get)
 };

@@ -4,18 +4,15 @@ var logger = require('log4js').getLogger('Word Model')
 var PartOfSpeech = require('./partOfSpeech')
 
 function Word() {
-	this.options = {
-		schema:'gs_word',
-		field:['_id', 'word', 'audio', 'createtime AS createTime', 'type'],
-		order:{_id:'ASC'}
-	}
+	this.options.schema = 'gs_word'
+	this.options.field = ['_id', 'word', 'audio', 'createtime AS createTime', 'type']
+	this.options.order = {_id:'ASC'}
 	this.relations = [new PartOfSpeech()]
 }
 
 Word.prototype = new SimpleDO()
-Word.prototype.makeup = function(partOfSpeeches) {
-	var self = this
-	self.recordset.forEach(function(word) {
+Word.prototype.makeup = function(partOfSpeeches, next) {
+	this.recordset.forEach(function(word) {
     word.audio = "http://"+config.host+":"+config.port+config.files.audio.base+word.audio;
     word.partOfSpeech = [];
     partOfSpeeches.some(function(partOfSpeech, index, arr) {//filter the part of speech for this word
@@ -32,7 +29,8 @@ Word.prototype.makeup = function(partOfSpeeches) {
         return true;
       }
     });
-  });	
+  });
+	next(null, this.recordset)
 }
 
 exports = module.exports = Word
