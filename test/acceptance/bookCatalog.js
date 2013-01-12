@@ -17,7 +17,7 @@ describe('Book Catalog', function(){
   })
   it('should success get catalog '+catalog, function(done){
     request()
-		.get(url+'?grade='+catalog)
+		.get(url+'?name='+catalog)
 		.end(function(res) {
 			res.statusCode.should.equal(200)
 			res.should.be.json
