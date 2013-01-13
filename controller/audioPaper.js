@@ -28,4 +28,27 @@ exports.publicTimeLine = function(req, res, next) {
 			return res.send(304)
 		}
 	})
-};
+}
+
+exports.get = function(req, res, next){
+	logger.debug('Get Request Query:',req.query)
+	var opt = {
+		query:{},
+		limit:{
+			start:req.query.start||1,
+			end:req.query.end||10
+		}
+	}
+	if(req.query.book_id) opt.query.book_id = req.query.book_id
+	if(req.query.creator_id) opt.query.creator_id = req.query.creator_id
+
+	var ap = new AudioPaper()
+	ap.find(opt, function(err, aps) {
+    if(err) return next(err);
+		if(aps.length > 0) {
+			return res.json({audioPaper:aps})
+		} else {
+			return res.send(204)
+		}
+	})
+}

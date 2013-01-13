@@ -69,4 +69,5 @@ exports = module.exports = function(app) {
 	app.get('/api/audio_paper/public_timeline', audioPaper.publicTimeLine)
 	app.get('/api/words', andRestrictAuth, word.get)
 	app.get('/api/book_catalogs', bookCatalog.get)
+	app.get('/api/audio_paper', audioPaper.get)
 };
