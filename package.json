@@ -13,6 +13,7 @@
     , "eventproxy": ">= 0.1.0"
 		, "log4js": ">= 0.5.5"
     , "moment" : "1.7.x"
+		, "redis": ">=0.8.2"
   }
   , "devDependencies": {
 	  	"mocha": "*"
