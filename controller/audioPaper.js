@@ -10,10 +10,33 @@ var kvCache = {
 	size:100,
 	maxAge:60
 }
+var key = 'AudioPaperPublicTimeLine'
+var updatePublicTimeLine = function(next){
+	var opt = {
+		order: {
+			createtime: 'DESC'
+		},
+		limit: {
+			start: 1,
+			end: kvCache.size
+		}
+	}
+	var ap = new AudioPaper()
+	ap.find(opt, function(err, aps) {
+    if(err) return logger.error('Interval find public time line', err)
+		var lastModified = util.format_date(aps[0].createTime)
+		redisClient.hmset(key, 'lastModified', lastModified, 'cache', JSON.stringify(aps), function(err, reply){
+			if(err) return logger.error('Interval update public time line cache', err)
+			if(next) next()
+		})
+	})
+}
+setInterval(updatePublicTimeLine, kvCache.maxAge*1000)
+updatePublicTimeLine()
 
 exports.publicTimeLine = function(req, res, next) {
 	var now = util.getNow()
-	var timeline = req.headers['if-modified-since']||now
+	var timeline = req.headers['if-modified-since']
 	var opt = {
 		query: {},
 		order: {
@@ -27,10 +50,8 @@ exports.publicTimeLine = function(req, res, next) {
 	logger.debug('AudioPaper PublicTimeLine Last-Modified', timeline)
 	var start = opt.limit.start-1
 	, stop = parseInt(opt.limit.end)
-	, key = 'AudioPaperPublicTimeLine'+timeline
 	
-	var send = function(apArr){
-		var aps = apArr.slice(start, stop)
+	var send = function(aps){
 		if(aps.length > 0) {
 			return res.json({audioPaper:aps}, {'last-modified': timeline})
 		} else {
@@ -42,59 +63,38 @@ exports.publicTimeLine = function(req, res, next) {
 		}
 	}
 
-	var cache = function(aps) {
-		/*
-		var args = [key].concat(aps.map(function(ap){
-			return JSON.stringify(ap)
-		}))
-		args.push(function(err, reply){
-			if(err) return next(err)
-			redisClient.expire(key, kvCache.maxAge, function(err, reply){
-				if(err) return next(err)
-				send(aps.slice(start, stop))
-			})
-		})
-		redisClient.rpush.apply(redisClient, args)*/
-		redisClient.multi()
-		.set(key, JSON.stringify(aps))
-		.expire(key, kvCache.maxAge)
-		.exec(function(err, replies){
-			if(err) return next(err)
-			send(aps)
-		})
-	}
-
 	var query = function(){
 		var ap = new AudioPaper()
 		ap.find(opt, function(err, aps) {
 	    if(err) return next(err)
-			if(opt.limit.start === 1 && opt.limit.end === kvCache.size) {
-				cache(aps)
-			} else {
-				send(aps);
-			}
+			send(aps)
 		})
 	}
 
-	logger.trace('gbo===', start, stop, kvCache, now)
-	if(stop > kvCache.size) {
-		query()
-	} else {
-		redisClient.ttl(key, function(err, reply){
-			if(err) return next(err)
-			if(reply === -1) {
-				opt.limit.start = 1
-				opt.limit.end = kvCache.size
-				query()
-			} else {
-				if(start === 0) return send([]);
-				redisClient.get(key, function(err, reply){
-					if(err) return err
-					var aps = JSON.parse(reply)
-					// logger.trace(aps)
-					send(aps)
-				})
+	var getCache = function(){
+		redisClient.hgetall(key, function(err, reply){
+			if(err) return err
+			if(!reply) {
+				logger.warn('AudioPaper Public TimeLine has not been ready')
+				return updatePublicTimeLine(getCache)
 			}
+			if(start === 0 && timeline === reply.lastModified) {
+				return send([])
+			}
+			timeline = reply.lastModified
+			var aps = JSON.parse(reply.cache)
+			// logger.trace(aps)
+			send(aps.slice(start, stop))
 		})
 	}
-};
+	
+	logger.trace('AudiPaper Public Time Line', start, stop, kvCache, now)
+	if(stop > kvCache.size) {
+		timeline = now;
+		logger.debug("Out of cache scope")
+		query()
+	} else {
+		getCache()
+	}
+}
+
