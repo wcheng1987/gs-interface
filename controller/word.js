@@ -9,8 +9,8 @@ exports.get = function(req, res, next) {
 	if(ids.length > 0) opt.query._id = {$in:ids}
 	if(req.query.start && req.query.end) {
 		opt.limit = {
-			start:req.query.start,
-			end:req.query.end
+			start:req.query.start||1,
+			end:req.query.end||10
 		}
 	} 
 	

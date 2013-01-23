@@ -64,9 +64,9 @@ exports = module.exports = function(app) {
 	app.put('/api/write_records', andRestrictAuth, listeningRecord.sync);
 	app.post('/api/error_write_records', andRestrictAuth,listeningErrorRedoRecord.add);
 	
-	app.get('/files/:type?/*', andRestrictAuth, fs.get);
+	app.get('/files/:type?/*', fs.get);
 	
 	app.get('/api/audio_paper/public_timeline', audioPaper.publicTimeLine)
-	app.get('/api/words', andRestrictAuth, word.get)
+	app.get('/api/words', word.get)
 	app.get('/api/book_catalogs', bookCatalog.get)
 };
