@@ -19,7 +19,11 @@ exports.get = function(req, res, next) {
 
 		var bookCatalogsLen = bookCatalogs.length;
 		if(bookCatalogsLen === 0) {
-			return res.send(204)
+			if(opt.limit.start == 1) {
+				return res.send(304)
+			} else {
+				return res.send(204)
+			}
 		}
 		else {
 			return res.json({bookCatalog:bookCatalogs})
