@@ -66,6 +66,7 @@ exports = module.exports = function(app) {
 	
 	app.get('/files/:type?/*', fs.get);
 	
+	app.get('/api/audio_paper', audioPaper.get)
 	app.get('/api/audio_paper/public_timeline', audioPaper.publicTimeLine)
 	app.get('/api/words', word.get)
 	app.get('/api/book_catalogs', bookCatalog.get)

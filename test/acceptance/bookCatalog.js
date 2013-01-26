@@ -6,7 +6,7 @@ var parentID = 1
 var level = 0
 
 describe('Book Catalog', function(){
-  it.only('should success get 30 catalog which level: '+level, function(done){
+  it('should success get 30 catalog which level: '+level, function(done){
     request()
 		.get(url+'?level='+level)
 		.end(function(res) {
