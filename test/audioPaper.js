@@ -29,23 +29,13 @@ describe('AudioPaper find', function(){
 				end:10
 			}	
 		}
-    ap.find(opt, function(err, rs) {
+    ap.find(opt, function(err, data) {
 			should.not.exist(err)
-			rs.should.be.an.instanceOf(Array)
-			rs.length.should.above(0)
-			rs.forEach(validRecord)
+			// console.log(data.member.audioPaper)
+			data.should.be.an.instanceOf(Array)
+			data.length.should.above(0)
+			data.forEach(validRecord)
 			done()
-    })
-	})
-	var bookID = 4
-	it('should success find by book '+bookID, function(done){
-	  ap.find({query:{book_id:bookID}}, function(err, rs){
-	  	should.not.exist(err)
-			// console.log(rs)
-			rs.should.be.an.instanceOf(Array)
-			rs.length.should.above(0)
-			rs.forEach(validRecord)
-			done()
-	  })
+    }, done)
 	})
 })
