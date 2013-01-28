@@ -1,5 +1,6 @@
 var request = require('../support/http');
 var util = require('../../lib/util');
+var json = require('../fixtures/audioPaper').audioPaper[0]
 
 var base = '/audio_paper'
 
@@ -17,30 +18,28 @@ describe('Audio Paper GET', function(){
 	  })
 	})
 	
-	var bookID = 4;
-	it('should succeed got by book_id:'+bookID, function(done){
+	it('should succeed got by book_id:'+json.book_id, function(done){
 	  request()
-		.get(url+'?book_id='+bookID)
+		.get(url+'?book_id='+json.book_id)
 		.end(function(res) {
 			res.statusCode.should.equal(200)
 			res.should.be.json
 			res.body.should.have.property('audioPaper')
 			res.body.audioPaper.length.should.be.above(0)
-			res.body.audioPaper[0].should.have.property('book_id', bookID+'')
+			res.body.audioPaper[0].should.have.property('book_id', json.book_id+'')
 			done()
 	  })
 	})
 	
-	var creatorID = 4;
-	it('should succeed got by creator_id:'+creatorID, function(done){
+	it('should succeed got by creator_id:'+json.creator_id, function(done){
 	  request()
-		.get(url+'?creator_id='+creatorID)
+		.get(url+'?creator_id='+json.creator_id)
 		.end(function(res) {
 			res.statusCode.should.equal(200)
 			res.should.be.json
 			res.body.should.have.property('audioPaper')
 			res.body.audioPaper.length.should.be.above(0)
-			res.body.audioPaper[0].should.have.property('creator_id', creatorID+'')
+			res.body.audioPaper[0].should.have.property('creator_id', json.creator_id+'')
 			done()
 	  })
 	})

@@ -1,7 +1,22 @@
 {
   "word": [
     {
-      "_id": 123,
+      "_id": 5200,
+      "word": "reader",
+      "audio": "http://www.jszx100.com1339/file/audio/reader.mp3",
+      "createTime": "2012-04-05 13:02:31",
+      "type": 0,
+      "partOfSpeech": [
+        {
+          "_id": 123,
+          "type": "vi.",
+          "chinese": "中文含义",
+          "sort": 1
+        }
+      ]
+    },
+    {
+      "_id": 5201,
       "word": "reader",
       "audio": "http://www.jszx100.com1339/file/audio/reader.mp3",
       "createTime": "2012-04-05 13:02:31",

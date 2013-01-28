@@ -1,7 +1,7 @@
 var config = require('config.js').config;
-var Member = require('./support/member');
-var file = require('./support/http.file');
-var files = require('./fixtures/files.json');
+var Member = require('../support/member');
+var file = require('../support/http.file');
+var files = require('../fixtures/files.json');
 
 var member = new Member();
 describe('File Server Unit Test', function(){

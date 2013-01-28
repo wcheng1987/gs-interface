@@ -13,7 +13,7 @@ var location = require('./lib/location.js');
 var listeningRecord = require('./lib/listeningRecord.js');
 var listeningErrorRedoRecord = require('./lib/listeningErrorRedoRecord.js');
 
-var fs = require('./lib/fileServer.js');
+var fs = require('./controller/fileServer.js');
 var audioPaper = require('./controller/audioPaper')
 var word = require('./controller/word')
 var bookCatalog = require('./controller/bookCatalog')

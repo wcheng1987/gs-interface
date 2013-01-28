@@ -11,16 +11,22 @@ var validRecord = function(record) {
 	record.partOfSpeech.length.should.above(0)	
 }
 
+var ids = json.word.map(function(word){
+	return word._id;
+})
+var opt = {query:{_id:{$in:ids}}}
+
 describe('Word Of Audio find', function(){
-  it('should success find one', function(done){
-    word.findOne({}, function(err, record){
+	it('should success find one', function(done){
+    word.findOne(opt, function(err, record){
 			should.not.exist(err)
 			validRecord(record)
 			done()
     })
   })
-  it('should success find ten', function(done){
-    word.find({limit:{start:1,end:10}}, function(err, rs){
+  it('should success find 10', function(done){
+		opt.limit = {start:1,end:10}
+    word.find(opt, function(err, rs){
 			should.not.exist(err)
 			rs.every(validRecord)
 			done()

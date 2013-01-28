@@ -1,18 +1,18 @@
 var should = require('should')
 var BookCatalog = require('../model/bookCatalog')
-var json = require('./fixtures/bookCatalog')
+var json = require('./fixtures/bookCatalog').bookCatalog[0]
 
 var bookCatalog = new BookCatalog()
 var validRecord = function(record) {
 	record.should.be.a('object')
-	for(var key in json.bookCatalog[0]) {
+	for(var key in json) {
 		record.should.have.property(key)
 	}
 }
 
-describe('BookCatalog Of Audio find', function(){
+describe('BookCatalog', function(){
   it('should success find one', function(done){
-    bookCatalog.findOne({query:{name:"初中"}}, function(err, record){
+    bookCatalog.findOne({query:{name:json.name}}, function(err, record){
 			should.not.exist(err)
 			validRecord(record)
 			done()
@@ -33,17 +33,16 @@ describe('BookCatalog Of Audio find', function(){
     })
   })
 	it('should success find top level catalog', function(done){
-    bookCatalog.find({query:{level:0}}, function(err, rs){
+    bookCatalog.find({query:{level:json.level}}, function(err, rs){
 			should.not.exist(err)
 			rs.every(validRecord)
 			done()
     })
 	})
 	it('should succeed find all by parent catalog', function(done){
-    bookCatalog.find({query:{parent_id:1}}, function(err, rs){
+    bookCatalog.find({query:{parent_id:json.parent_id}}, function(err, rs){
 			should.not.exist(err)
 			rs.every(validRecord)
-			console.log(rs)
 			done()
     })
 	})

@@ -14,7 +14,7 @@ exports.get = function(req, res, next) {
 	options.root = file.root;
 
   basename = decodeURI(basename);
-	logger.trace(basename, options);
+	// logger.trace(basename, options);
 	
   res.sendfile(basename, options, function(err) {
 		if(err) {
