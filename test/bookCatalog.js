@@ -36,7 +36,14 @@ describe('BookCatalog Of Audio find', function(){
     bookCatalog.find({query:{level:0}}, function(err, rs){
 			should.not.exist(err)
 			rs.every(validRecord)
-			should.not.exist(rs[0].parent_id)
+			done()
+    })
+	})
+	it('should succeed find all by parent catalog', function(done){
+    bookCatalog.find({query:{parent_id:1}}, function(err, rs){
+			should.not.exist(err)
+			rs.every(validRecord)
+			console.log(rs)
 			done()
     })
 	})
