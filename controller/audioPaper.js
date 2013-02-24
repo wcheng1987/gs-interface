@@ -12,28 +12,34 @@ var kvCache = {
 }
 var key = 'AudioPaperPublicTimeLine'
 var lastModified = null
-var updatePublicTimeLine = function(next){
-	var opt = {
-		order: {
-			createtime: 'DESC'
-		},
-		limit: {
+
+var updatePublicTimeLine = function(err, aps){
+	lastModified = util.format_date(aps[0].createTime)
+	redisClient.hmset(key, 'lastModified', lastModified, 'cache', JSON.stringify(aps), function(err, reply){
+		if(err) return logger.error('Interval update public time line cache', err)
+	})
+}
+
+var findPublicTimeLine = function(opt, next){
+	if(!opt.query) opt.query = {}
+	opt.query.creator_id = 458 // member_id of 金石
+	if(!opt.order) opt.order = {}
+	opt.order.createtime = 'DESC'
+	if(!opt.limit) {
+		opt.limit = {
 			start: 1,
 			end: kvCache.size
 		}
 	}
+	
 	var ap = new AudioPaper()
 	ap.find(opt, function(err, aps) {
     if(err) return logger.error('Interval find public time line', err)
-		lastModified = util.format_date(aps[0].createTime)
-		redisClient.hmset(key, 'lastModified', lastModified, 'cache', JSON.stringify(aps), function(err, reply){
-			if(err) return logger.error('Interval update public time line cache', err)
-			if(next) next()
-		})
+		if(next) next(err, aps)
 	})
 }
 setInterval(updatePublicTimeLine, kvCache.maxAge*1000)
-updatePublicTimeLine()
+findPublicTimeLine({}, updatePublicTimeLine)
 
 /*
 	lcoal 
@@ -50,14 +56,6 @@ var send = function(aps, res){
 	}
 }
 
-var query = function(opt, res, next){
-	var ap = new AudioPaper()
-	ap.find(opt, function(err, aps) {
-    if(err) return next(err)
-		send(aps, res)
-	})
-}
-
 /*
 	module expors
 */
@@ -65,10 +63,6 @@ exports.publicTimeLine = function(req, res, next) {
 	var now = util.getNow()
 	var timeline = req.headers['if-modified-since']
 	var opt = {
-		query: {},
-		order: {
-			createtime: 'DESC'
-		},
 		limit: {
 			start: req.query.start || 1,
 			end: req.query.end || 10
@@ -90,6 +84,7 @@ exports.publicTimeLine = function(req, res, next) {
 				return send([], res)
 			}
 			var aps = JSON.parse(reply.cache)
+			logger.warn(reply.cache)
 			send(aps.slice(res.start, res.stop), res)
 		})
 	}
@@ -97,7 +92,10 @@ exports.publicTimeLine = function(req, res, next) {
 	if(res.stop > kvCache.size) {
 		timeline = now;
 		logger.debug("Out of cache scope")
-		query(opt, res, next)
+		findPublicTimeLine(opt, function(err, aps){
+			if(err) return next(err)
+			send(aps, res)
+		})
 	} else {
 		getCache()
 	}
@@ -117,6 +115,11 @@ exports.get = function(req, res, next) {
 
 	res.start = opt.limit.start-1
 	res.stop = parseInt(opt.limit.end)
-	query(opt, res, next)
+
+	var ap = new AudioPaper()
+	ap.find(opt, function(err, aps){
+		if(err) next(err)
+		send(aps, res)
+	})
 }
 
