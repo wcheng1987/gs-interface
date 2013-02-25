@@ -1,6 +1,6 @@
 var request = require('../support/http')
 var file = require('../support/http.file')
-var EventProxy = require("eventproxy").EventProxy;
+var EventProxy = require("eventproxy").EventProxy
 
 var words = []
 var brokenWords = []
@@ -30,6 +30,8 @@ describe('Word Resouce Check', function(){
 		words.forEach(function(word){
 			file.get('', word.audio, function(statusCode){
 				if(statusCode != 200) {
+					// console.info(encodeURI(word.audio))
+					// console.info(word.audio)
 					brokenWords.push(word._id+'|'+word.word+':'+word.audio+' status='+statusCode);
 				}
 				ep.trigger('word_done', statusCode)

@@ -22,7 +22,7 @@ exports.get = function(sid, objectURL, done) {
   r(encodeURI(objectURL), function(err, res, body) {
 		should.not.exist(err);
 		if(res.statusCode !== 200) {
-			console.log('==download ', res.statusCode)
+			// console.log('==download ', res.statusCode)
 			if(done) done(res.statusCode)
 			return
 		}
