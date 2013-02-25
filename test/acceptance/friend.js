@@ -45,7 +45,9 @@ function getAudioPaper(user) {
 function getAudioFile(word) {
 	describe('###Audio file : '+word.word, function(){
 	  it('should success download '+word.audio, function(done){
-			file.get(member.sid, word.audio, done)
+			file.get(member.sid, word.audio, function(){
+				done()
+			})
 	  })
 	})
 }

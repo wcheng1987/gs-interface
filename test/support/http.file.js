@@ -23,7 +23,8 @@ exports.get = function(sid, objectURL, done) {
 		should.not.exist(err);
 		if(res.statusCode !== 200) {
 			console.log('==download ', res.statusCode)
-			return done()
+			if(done) done(res.statusCode)
+			return
 		}
     res.statusCode.should.eql(200);
     res.should.have.header('content-length');
@@ -31,7 +32,7 @@ exports.get = function(sid, objectURL, done) {
 		ct.should.eql(body.length)
     // fs.stat(pathname, function(ferr, stats) {
     //   stats.size.should.equal(ct);
-      if(done) done()
+      if(done) done(res.statusCode)
     // });
   })
   // .pipe(ws);

@@ -11,11 +11,11 @@ var http = require('http');
   
 module.exports = request;
 
-function request(showRes) {
-  return new Request(showRes);
+function request() {
+  return new Request();
 }
 
-function Request(showRes) {
+function Request() {
   var self = this;
   this.data = [];
   this.header = {};
@@ -24,7 +24,6 @@ function Request(showRes) {
       address:process.env.SERVER_HOST||'127.0.0.1',
       port: parseInt(process.env.SERVER_PORT)||1339
   };
-  this.showRes = showRes || true; 
 	// console.log(this.addr);
 }
 
@@ -95,7 +94,6 @@ Request.prototype.end = function(fn){
       res.setEncoding('utf8');
       res.on('data', function(chunk){ buf += chunk });
       res.on('end', function(){
-        if (self.showRes) console.log(buf);
         var ct = res.headers['content-type'];
         if(ct && 0 <= ct.indexOf('json')) {
           res.body = JSON.parse(buf);  
