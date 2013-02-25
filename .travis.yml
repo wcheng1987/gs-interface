@@ -13,4 +13,5 @@ env:
 branches:
   only:
     - master
+    - develop
     - /^deploy-.*$/
