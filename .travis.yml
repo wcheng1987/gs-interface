@@ -15,3 +15,8 @@ branches:
     - master
     - develop
     - /^deploy-.*$/
+notifications:
+  webhooks:
+    urls:
+      on_failure:never
+      - http://42.121.104.247:2002/deploy
