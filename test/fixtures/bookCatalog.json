@@ -1,9 +1,9 @@
 {
   "bookCatalog": [
     {
-      "_id": 1448,
-      "parent_id": 1381,
-      "name": "初中英语",
+      "_id": 2983,
+      "parent_id": 2982,
+      "name": "牛津(译林版)",
       "createTime": "2012-09-27 11:02:22",
       "wordCount": 128,
       "coverImage": "http://www.jszx100.com1339/file/image/oxford7A.jpg",
