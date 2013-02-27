@@ -32,23 +32,11 @@ function getAudioPaper(user) {
 			member.getAudioPaper(user, done)
 		})
 	  it('should success get audio paper of '+user.realname, function() {
-			// console.log('222', user)
-			user.words.forEach(getAudioFile)
 			user.audioPaper.forEach(postRecord)
 	  })
 		it('should success post listen record', function(){
 		  
 		})
-	})
-}
-
-function getAudioFile(word) {
-	describe('###Audio file : '+word.word, function(){
-	  it('should success download '+word.audio, function(done){
-			file.get(member.sid, word.audio, function(){
-				done()
-			})
-	  })
 	})
 }
 
