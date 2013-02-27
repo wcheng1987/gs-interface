@@ -13,13 +13,6 @@ var kvCache = {
 var key = 'AudioPaperPublicTimeLine'
 var lastModified = null
 
-var updatePublicTimeLine = function(err, aps){
-	lastModified = util.format_date(aps[0].createTime)
-	redisClient.hmset(key, 'lastModified', lastModified, 'cache', JSON.stringify(aps), function(err, reply){
-		if(err) return logger.error('Interval update public time line cache', err)
-	})
-}
-
 var findPublicTimeLine = function(opt, next){
 	if(!opt.query) opt.query = {}
 	opt.query.creator_id = 458 // member_id of 金石
@@ -38,8 +31,19 @@ var findPublicTimeLine = function(opt, next){
 		if(next) next(err, aps)
 	})
 }
+
+var updatePublicTimeLine = function(){
+	findPublicTimeLine({}, function(err, aps){
+		if(err) return logger.error('Refresh public time line failed !!',err)
+		lastModified = util.format_date(aps[0].createTime)
+		redisClient.hmset(key, 'lastModified', lastModified, 'cache', JSON.stringify(aps), function(err, reply){
+			if(err) return logger.error('Interval update public time line cache', err)
+		})
+	})
+}
+
 setInterval(updatePublicTimeLine, kvCache.maxAge*1000)
-findPublicTimeLine({}, updatePublicTimeLine)
+updatePublicTimeLine()
 
 /*
 	lcoal 
